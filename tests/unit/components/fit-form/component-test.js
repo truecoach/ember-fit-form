@@ -170,7 +170,7 @@ module('Unit | Component | fit-form', function(hooks) {
 
     assert.ok(successSpy.calledOnce, "onSuccess was called");
 
-    [ form, result ] = successSpy.getCall(0).args;
+    [ result, form ] = successSpy.getCall(0).args;
 
     assert.ok(form, 'onSuccess passes publicAPI');
     assert.equal(result, 'submission success', 'onSuccess passes the submit return value');
@@ -190,7 +190,7 @@ module('Unit | Component | fit-form', function(hooks) {
 
     assert.ok(successSpy.calledOnce, "onSuccess was called");
 
-    [ form, result ] = successSpy.getCall(0).args;
+    [ result, form ] = successSpy.getCall(0).args;
 
     assert.ok(form, 'onSuccess passes publicAPI');
     assert.equal(result, 'submission success', 'onSuccess passes the submit promise resolution');
@@ -210,7 +210,7 @@ module('Unit | Component | fit-form', function(hooks) {
 
     assert.ok(errorSpy.calledOnce, "onError was called");
 
-    [ form, error ] = errorSpy.getCall(0).args;
+    [ error, form ] = errorSpy.getCall(0).args;
 
     assert.ok(form, 'onError passes publicAPI');
     assert.equal(error, 'the horror of all horrors', 'onError passes the submit promise rejection');

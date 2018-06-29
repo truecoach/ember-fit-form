@@ -95,7 +95,7 @@ module('Integration | Component | fit-form', function(hooks) {
 
     assert.ok(successSpy.calledOnce, "onSuccess was called");
 
-    const [ component, result ] = successSpy.getCall(0).args;
+    const [ result, component ] = successSpy.getCall(0).args;
 
     assert.ok(component, 'onSuccess is called with the publicAPI as the first arg');
     assert.equal(result, 'Total Success', 'onSuccess is called with the onSubmit resolution as the second arg');
@@ -126,7 +126,7 @@ module('Integration | Component | fit-form', function(hooks) {
 
     assert.ok(errorSpy.calledOnce, 'onError was called');
 
-    const [ component, error ] = errorSpy.getCall(0).args;
+    const [ error, component ] = errorSpy.getCall(0).args;
 
     assert.ok(component, 'onError is called with the publicAPI as the first arg');
     assert.equal(error, 'Sorry not sorry', 'onError is called with the onSubmit rejection as the second arg');
@@ -161,27 +161,107 @@ module('Integration | Component | fit-form', function(hooks) {
     assert.ok(component, 'onCancel is called with the publicAPI as the first arg');
   });
 
-  // TODO: Perform Syntax deserves its own set of tests
-  test('performing a task', async function(assert) {
-    assert.expect(1);
+  test('invoking the action', async function(assert) {
+    assert.expect(2);
 
     const changeset = new Changeset({});
 
     this.setProperties({
       changeset,
-      onCancel()  {}
+      onCancel(form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      },
+      onSubmit(form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      }
     });
 
-    const cancelSpy = this.spy(this, 'onCancel');
-
     await render(hbs`
-    {{#fit-form changeset onCancel=onCancel as |form|}}
-      <a onclick={{perform form.cancelTask}}>Cancel</a>
+    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+      <a {{action form.cancel}}>Cancel</a>
+      <button {{action form.submit}}>Submit</button>
     {{/fit-form}}
   `);
 
     await click('a');
+    await click('button');
+  });
 
-    assert.ok(cancelSpy.calledOnce, "onCancel was called");
+  test('invoking the action with a target', async function(assert) {
+    assert.expect(2);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      onCancel(form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      },
+      onSubmit(form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      }
+    });
+
+    await render(hbs`
+    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+      <a {{action "cancel" target=form}}>Cancel</a>
+      <button {{action "submit" target=form}}>Submit</button>
+    {{/fit-form}}
+  `);
+
+    await click('a');
+    await click('button');
+  });
+
+  test('invoking the action onclick', async function(assert) {
+    assert.expect(2);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      onCancel(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      },
+      onSubmit(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      }
+    });
+
+    await render(hbs`
+    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+      <a onclick={{action form.cancel}}>Cancel</a>
+      <button onclick={{action form.submit}} type="button">Submit</button>
+    {{/fit-form}}
+  `);
+
+    await click('a');
+    await click('button');
+  });
+
+  test('performing the action onclick', async function(assert) {
+    assert.expect(2);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      onCancel(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      },
+      onSubmit(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      }
+    });
+
+    await render(hbs`
+    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+      <a onclick={{perform form.cancelTask}}>Cancel</a>
+      <button onclick={{perform form.submitTask}} type="button">Cancel</button>
+    {{/fit-form}}
+  `);
+
+    await click('a');
+    await click('button');
   });
 });

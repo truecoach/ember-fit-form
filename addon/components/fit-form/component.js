@@ -57,13 +57,22 @@ const FitFormComponent = Component.extend({
     const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapterName'));
     const emberModelArray = emberArray(makeArray(this.get('models')));
 
-    return Adapter.create({
+    const adapter = Adapter.create({
       models: emberModelArray,
       onCancel: this.get('onCancel'),
       onError: this.get('onError'),
       onSubmit: this.get('onSubmit'),
       onSuccess: this.get('onSuccess')
     });
+
+    // Set the `adapter` as the `this` context for template actions, ie {{action form.submit}}
+    adapter.setProperties({
+      cancel: adapter.cancel.bind(adapter),
+      submit: adapter.submit.bind(adapter),
+      validate: adapter.validate.bind(adapter)
+    });
+
+    return adapter;
   }),
 
   onkeydown() {},
