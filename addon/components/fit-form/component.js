@@ -53,6 +53,12 @@ const FitFormComponent = Component.extend({
    */
   onCancel(){},
 
+  // Events
+  submit(event) {
+    event.preventDefault();
+    this.get('formObject').submit(...arguments);
+  },
+
   formObject: computed('models.[]', 'adapterName', function() {
     const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapterName'));
     const emberModelArray = emberArray(makeArray(this.get('models')));

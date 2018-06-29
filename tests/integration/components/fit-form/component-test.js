@@ -239,6 +239,27 @@ module('Integration | Component | fit-form', function(hooks) {
     await click('button');
   });
 
+  test('invoking the button of type=submit', async function(assert) {
+    assert.expect(1);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      onSubmit(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+      }
+    });
+
+    await render(hbs`
+      {{#fit-form changeset onSubmit=onSubmit as |form|}}
+        <button type="submit">Submit</button>
+      {{/fit-form}}
+    `);
+
+    await click('button');
+  });
+
   test('performing the action onclick', async function(assert) {
     assert.expect(2);
 
