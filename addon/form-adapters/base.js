@@ -35,9 +35,9 @@ const Base = emberObject.extend({
   isSubmittable: computed.not('isUnsubmittable'),
   isUnsubmittable: computed.or('isPristine', 'isInvalid', 'isSubmitting', 'isCancelling'),
 
-  cancel() { return this.get('cancelTask').perform(...arguments ); },
-  submit() { return this.get('submitTask').perform(...arguments ); },
-  validate() { return this.get('validateTask').perform(...arguments ); },
+  cancel() { return this.get('cancelTask').perform(...arguments); },
+  submit() { return this.get('submitTask').perform(...arguments); },
+  validate() { return this.get('validateTask').perform(...arguments); },
 
   cancelTask: task(function * () {
     return yield this.cancelAction(...arguments);
@@ -50,17 +50,17 @@ const Base = emberObject.extend({
   }),
 
   cancelAction() {
-    return this.onCancel(this, ...arguments);
+    return this.get('onCancel')(...arguments, this);
   },
 
   submitAction(...args) {
     return this.validate().then(() => {
       if (this.get('isValid')) {
-        const submission = this.onSubmit(this, ...args);
-        return resolve(submission).then((result) => {
-          return this.onSuccess(this, result);
-        }, (error) => {
-          return this.onError(this, error);
+        const submission = this.get('onSubmit')(...args, this);
+        return resolve(submission).then((...args) => {
+          return this.get('onSuccess')(...args, this);
+        }, (...args) => {
+          return this.get('onError')(...args, this);
         });
       }
     });
