@@ -2,7 +2,7 @@ import Changeset from 'ember-changeset';
 import RSVP from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
 import test from 'ember-sinon-qunit/test-support/test';
-import { click } from '@ember/test-helpers';
+import { click, triggerKeyEvent } from '@ember/test-helpers';
 import { module } from 'qunit';
 import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
@@ -261,7 +261,7 @@ module('Integration | Component | fit-form', function(hooks) {
   });
 
   test('invoking the action onclick', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     const changeset = new Changeset({});
 
@@ -269,9 +269,11 @@ module('Integration | Component | fit-form', function(hooks) {
       changeset,
       onCancel(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "click", "click event is present");
       },
       onSubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "click", "click event is present");
       }
     });
 
@@ -286,8 +288,8 @@ module('Integration | Component | fit-form', function(hooks) {
     await click('button');
   });
 
-  test('invoking the button of type=submit', async function(assert) {
-    assert.expect(1);
+  test('invoking a button of type=submit (implicit)', async function(assert) {
+    assert.expect(2);
 
     const changeset = new Changeset({});
 
@@ -295,20 +297,43 @@ module('Integration | Component | fit-form', function(hooks) {
       changeset,
       onSubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "submit", "submit event is present");
       }
     });
 
     await render(hbs`
       {{#fit-form changeset onSubmit=onSubmit as |form|}}
-        <button type="submit">Submit</button>
+        <button>Submit</button>
       {{/fit-form}}
     `);
 
     await click('button');
   });
 
-  test('performing the action onclick', async function(assert) {
+  test('invoking an input of type=submit', async function(assert) {
     assert.expect(2);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      onSubmit(event, form)  {
+        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "submit", "submit event is present");
+      }
+    });
+
+    await render(hbs`
+      {{#fit-form changeset onSubmit=onSubmit as |form|}}
+        <input type="submit">
+      {{/fit-form}}
+    `);
+
+    await click('input');
+  });
+
+  test('performing the action onclick', async function(assert) {
+    assert.expect(4);
 
     const changeset = new Changeset({});
 
@@ -316,9 +341,11 @@ module('Integration | Component | fit-form', function(hooks) {
       changeset,
       onCancel(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "click", "click event is present");
       },
       onSubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(event.type, "click", "click event is present");
       }
     });
 
@@ -331,5 +358,46 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('a');
     await click('button');
+  });
+
+  module('keyboard event handlers', function() {
+    test(`keydown`, async function(assert) {
+      assert.ok(3);
+
+      this.setProperties({
+        onkeydown(event) {
+          assert.equal(event.type, "keydown", "triggered event type");
+        }
+      });
+
+      await render(hbs`{{fit-form onkeydown=(action onkeydown)}}`);
+      await triggerKeyEvent('form', "keydown", 'Enter');
+    });
+
+    test(`keyup`, async function(assert) {
+      assert.ok(3);
+
+      this.setProperties({
+        onkeyup(event) {
+          assert.equal(event.type, "keyup", "triggered event type");
+        }
+      });
+
+      await render(hbs`{{fit-form onkeyup=(action onkeyup)}}`);
+      await triggerKeyEvent('form', "keyup", 'Enter');
+    });
+
+    test(`keypress`, async function(assert) {
+      assert.ok(3);
+
+      this.setProperties({
+        onkeypress(event) {
+          assert.equal(event.type, "keypress", "triggered event type");
+        }
+      });
+
+      await render(hbs`{{fit-form onkeypress=(action onkeypress)}}`);
+      await triggerKeyEvent('form', "keypress", 'Enter');
+    });
   });
 });
