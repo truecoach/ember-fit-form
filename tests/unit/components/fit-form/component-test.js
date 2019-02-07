@@ -224,7 +224,7 @@ module('Unit | Component | fit-form', function(hooks) {
 
     const [ arg ] = submitStub.getCall(0).args;
 
-    assert.ok(arg, 'onSubmit passes fitForm as the first argument');
+    assert.equal(arg, form, 'onSubmit passes fitForm as the first argument');
 
     deferred.resolve();
 
@@ -249,7 +249,7 @@ module('Unit | Component | fit-form', function(hooks) {
     assert.ok(form, 'onCancel passes publicAPI as the first argument');
   });
 
-  test('the submmission succeeds', async function(assert) {
+  test('the submission succeeds', async function(assert) {
     assert.expect(3);
 
     const component = this.owner.factoryFor('component:fit-form').create();
@@ -257,19 +257,19 @@ module('Unit | Component | fit-form', function(hooks) {
 
     this.stub(component, 'onSubmit').returns('submission success');
 
-    let result, form = component.get('formObject');
+    let success, form = component.get('formObject');
 
     await run(() => form.submit());
 
     assert.ok(successSpy.calledOnce, "onSuccess was called");
 
-    [ result, form ] = successSpy.getCall(0).args;
+    [ success, form ] = successSpy.getCall(0).args;
 
     assert.ok(form, 'onSuccess passes publicAPI');
-    assert.equal(result, 'submission success', 'onSuccess passes the submit return value');
+    assert.equal(success, 'submission success', 'onSuccess passes the submit return value');
   });
 
-  test('the submmission returns a resolved promise', async function(assert) {
+  test('the submission returns a resolved promise', async function(assert) {
     assert.expect(3);
 
     const component = this.owner.factoryFor('component:fit-form').create();
@@ -277,19 +277,19 @@ module('Unit | Component | fit-form', function(hooks) {
 
     this.stub(component, 'onSubmit').resolves('submission success');
 
-    let result, form = component.get('formObject');
+    let success, form = component.get('formObject');
 
     await run(() => form.submit());
 
     assert.ok(successSpy.calledOnce, "onSuccess was called");
 
-    [ result, form ] = successSpy.getCall(0).args;
+    [ success, form ] = successSpy.getCall(0).args;
 
     assert.ok(form, 'onSuccess passes publicAPI');
-    assert.equal(result, 'submission success', 'onSuccess passes the submit promise resolution');
+    assert.equal(success, 'submission success', 'onSuccess passes the submit promise resolution');
   });
 
-  test('the submmission returns a rejected promise', async function(assert) {
+  test('the submission returns a rejected promise', async function(assert) {
     assert.expect(3);
 
     const component = this.owner.factoryFor('component:fit-form').create();

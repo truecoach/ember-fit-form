@@ -53,7 +53,12 @@ const FitFormComponent = Component.extend({
    */
   onCancel(){},
 
-  // Events
+  init() {
+    this._super(...arguments);
+    this._registerKeyboardEvents();
+  },
+
+  // Form Events
   submit(event) {
     event.preventDefault();
     this.get('formObject').submit(...arguments);
@@ -81,10 +86,16 @@ const FitFormComponent = Component.extend({
     return adapter;
   }),
 
-  onkeydown() {},
-  keyDown() {
-    const formObject = this.get('formObject');
-    this.get('onkeydown')(...arguments, formObject);
+  _registerKeyboardEvents() {
+    const eventNames = ['keyDown','keyUp','keyPress'];
+    eventNames.forEach(eventName => {
+      const method = this[`on${eventName.toLowerCase()}`];
+      if (typeof method === 'function') {
+        this[eventName] = function(...args){
+          method(...args, this.get('formObject'));
+        };
+      }
+    });
   }
 });
 
