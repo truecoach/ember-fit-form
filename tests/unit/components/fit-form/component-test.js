@@ -1,16 +1,12 @@
-import test from 'ember-sinon-qunit/test-support/test';
-
-import { module } from 'qunit';
-import { setupTest } from 'ember-qunit';
-
 import Changeset from 'ember-changeset';
-import lookupValidator from 'ember-changeset-validations';
-import { validatePresence } from 'ember-changeset-validations/validators';
-
-import { get } from '@ember/object';
-import { run } from '@ember/runloop';
-
 import RSVP from 'rsvp';
+import lookupValidator from 'ember-changeset-validations';
+import test from 'ember-sinon-qunit/test-support/test';
+import { get } from '@ember/object';
+import { module } from 'qunit';
+import { run } from '@ember/runloop';
+import { setupTest } from 'ember-qunit';
+import { validatePresence } from 'ember-changeset-validations/validators';
 
 function assertFormProps(assert, form, assertions = {}) {
   Object.keys(assertions).forEach((k) => {

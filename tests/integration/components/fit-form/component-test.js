@@ -1,16 +1,12 @@
-import { module } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import Changeset from 'ember-changeset';
+import RSVP from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
 import test from 'ember-sinon-qunit/test-support/test';
-
-import Changeset from 'ember-changeset';
-
 import { click } from '@ember/test-helpers';
-import { find } from 'ember-native-dom-helpers';
-
-import RSVP from 'rsvp';
+import { module } from 'qunit';
+import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
+import { setupRenderingTest } from 'ember-qunit';
 
 module('Integration | Component | fit-form', function(hooks) {
   setupRenderingTest(hooks);
@@ -24,8 +20,8 @@ module('Integration | Component | fit-form', function(hooks) {
     {{/fit-form}}
   `);
 
-    assert.ok(find('form'), 'renders as a `form` element');
-    assert.equal(find('form').textContent.trim(), 'template block text');
+    assert.dom('form').exists('renders as a `form` element');
+    assert.dom('form').hasText('template block text');
   });
 
   test('Submitting a form', async function(assert) {
@@ -51,11 +47,11 @@ module('Integration | Component | fit-form', function(hooks) {
     {{/fit-form}}
   `);
 
-    assert.ok(find('button').disabled, 'the form is unsubmittable');
+    assert.dom('button').isDisabled('the form is unsubmittable');
 
     run(() => { changeset.set('name', 'Fit Form'); });
 
-    assert.notOk(find('button').disabled, 'the form is submittable');
+    assert.dom('button').isNotDisabled('the form is submittable');
 
     await click('button');
 
@@ -66,7 +62,7 @@ module('Integration | Component | fit-form', function(hooks) {
 
     assert.ok(component, 'onSubmit is called with the publicAPI as the first arg');
 
-    assert.ok(find('button').disabled, 'the form is unsubmittable while submitting');
+    assert.dom('button').isDisabled('the form is unsubmittable while submitting');
   });
 
   test('Submitting a form succeeds', async function(assert) {
