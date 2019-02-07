@@ -65,6 +65,57 @@ module('Integration | Component | fit-form', function(hooks) {
     assert.dom('button').isDisabled('the form is unsubmittable while submitting');
   });
 
+  test('Submitting a form with many changesets', async function(assert) {
+    assert.expect(9);
+
+    const changeset0 = new Changeset({});
+    const changeset1 = new Changeset({});
+
+    this.setProperties({
+      changeset0,
+      changeset1,
+      onSubmit() {
+        return RSVP.defer().promise;
+      } // pending promise
+    });
+
+    const submitSpy = this.spy(this, 'onSubmit');
+    const validateSpies = [
+      this.spy(changeset0, 'validate'),
+      this.spy(changeset1, 'validate')
+    ];
+
+    await render(hbs`
+    {{#fit-form changeset0 changeset1 onSubmit=onSubmit as |form|}}
+      <button {{action "submit" target=form}} disabled={{form.isUnsubmittable}}>
+        Save
+      </button>
+    {{/fit-form}}
+  `);
+
+    assert.dom('button').isDisabled('the form is unsubmittable');
+
+    run(() => { changeset0.set('name', 'Fit Form'); });
+
+    assert.dom('button').isNotDisabled('the form is submittable');
+
+    await click('button');
+
+    assert.ok(submitSpy.calledOnce, "onSubmit was called");
+    assert.ok(validateSpies.every(spy => spy.calledOnce), "each changeset was validated");
+
+    const [ component ] = submitSpy.getCall(0).args;
+
+    assert.ok(component, 'onSubmit is called with the publicAPI as the first arg');
+
+    assert.dom('button').isDisabled('the form is unsubmittable while submitting');
+
+    const models = component.get('models');
+    assert.equal(models.length, 2, "two models are present on the component");
+    assert.equal(models[0], changeset0);
+    assert.equal(models[1], changeset1);
+  });
+
   test('Submitting a form succeeds', async function(assert) {
     const done = assert.async();
     assert.expect(3);

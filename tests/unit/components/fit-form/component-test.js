@@ -72,6 +72,51 @@ module('Unit | Component | fit-form', function(hooks) {
     });
   });
 
+  test('the form monitors many changesets for dirtiness and submittability', function(assert) {
+    const changesets = [ new Changeset({}), new Changeset({}) ];
+
+    let component = this.owner.factoryFor('component:fit-form').create({ models: changesets });
+
+    let form = component.get('formObject');
+
+    assert.deepEqual(form.models, changesets);
+
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: true,
+      isSubmittable: false,
+
+      // Dirtiness
+      isPristine: true,
+      isDirty: false
+    });
+
+    changesets[0].set('name', 'Model0');
+
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: false,
+      isSubmittable: true,
+
+      // Dirtiness
+      isPristine: false,
+      isDirty: true
+    });
+
+    changesets[1].set('name', 'Model1');
+
+    form = component.get('formObject');
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: false,
+      isSubmittable: true,
+
+      // Dirtiness
+      isPristine: false,
+      isDirty: true
+    });
+  });
+
   test('the form monitors changesets with validations', function(assert) {
     assert.expect(9);
 
@@ -96,6 +141,58 @@ module('Unit | Component | fit-form', function(hooks) {
     });
 
     changeset.set('name', 'Fit Form');
+
+    form = component.get('formObject');
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: false,
+      isSubmittable: true,
+
+      // Validity
+      isInvalid: false,
+      isValid: true
+    });
+  });
+
+  test('the form monitors many changesets with validations', function(assert) {
+    assert.expect(13);
+
+    const validations = { name: validatePresence({ presence: true }) };
+    const changesets = [
+      new Changeset({}, lookupValidator(validations), validations),
+      new Changeset({}, lookupValidator(validations), validations),
+    ];
+
+    changesets.forEach((c) => c.validate());
+
+    let component = this.owner.factoryFor('component:fit-form').create({ models: changesets });
+    let form = component.get('formObject');
+
+    assert.deepEqual(form.models, changesets);
+
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: true,
+      isSubmittable: false,
+
+      // Validity
+      isInvalid: true,
+      isValid: false
+    });
+
+    changesets[0].set('name', 'Model0');
+
+    assertFormProps(assert, form, {
+      // Submittability
+      isUnsubmittable: true,
+      isSubmittable: false,
+
+      // Validity
+      isInvalid: true,
+      isValid: false
+    });
+
+    changesets[1].set('name', 'Model1');
 
     form = component.get('formObject');
     assertFormProps(assert, form, {
