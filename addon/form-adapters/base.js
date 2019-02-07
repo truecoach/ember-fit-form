@@ -1,3 +1,4 @@
+import { or, readOnly, not } from '@ember/object/computed';
 import emberObject from '@ember/object';
 
 import { all } from 'rsvp';
@@ -14,26 +15,26 @@ const Base = emberObject.extend({
   onSuccess(){},
 
   // ---------------------- Form State ----------------------
-  didCancel: computed.or('cancelTask.last.{isError,isSuccessful}'),
-  didSubmit: computed.or('submitTask.last.{isError,isSuccessful}'),
-  didValidate: computed.or('validateTask.last.{isError,isSucccessful}'),
+  didCancel: or('cancelTask.last.{isError,isSuccessful}'),
+  didSubmit: or('submitTask.last.{isError,isSuccessful}'),
+  didValidate: or('validateTask.last.{isError,isSucccessful}'),
 
-  isCancelling: computed.readOnly('cancelTask.isRunning'),
-  isSubmitting: computed.readOnly('submitTask.isRunning'),
-  isValidating: computed.readOnly('validateTask.isRunning'),
+  isCancelling: readOnly('cancelTask.isRunning'),
+  isSubmitting: readOnly('submitTask.isRunning'),
+  isValidating: readOnly('validateTask.isRunning'),
 
   isInvalid: computed('models.@each.validations', function() {
     return this.get('models').some(m => m.get('validations.isInvalid'));
   }),
-  isValid: computed.not('isInvalid'),
+  isValid: not('isInvalid'),
 
   isDirty: computed('models.@each.hasDirtyAttributes', function() {
     return this.get('models').some(c => c.get('hasDirtyAttributes'));
   }),
-  isPristine: computed.not('isDirty'),
+  isPristine: not('isDirty'),
 
-  isSubmittable: computed.not('isUnsubmittable'),
-  isUnsubmittable: computed.or('isPristine', 'isInvalid', 'isSubmitting', 'isCancelling'),
+  isSubmittable: not('isUnsubmittable'),
+  isUnsubmittable: or('isPristine', 'isInvalid', 'isSubmitting', 'isCancelling'),
 
   cancel() { return this.get('cancelTask').perform(...arguments); },
   submit() { return this.get('submitTask').perform(...arguments); },
