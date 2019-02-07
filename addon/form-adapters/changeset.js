@@ -1,8 +1,9 @@
+import { readOnly } from '@ember/object/computed';
 import Base from './base';
 import { computed } from '@ember/object';
 
 const Changeset = Base.extend({
-  changesets: computed.readOnly('models'),
+  changesets: readOnly('models'),
 
   isDirty: computed('changesets.@each.isDirty', function() {
     return this.get('changesets').some(c => c.get('isDirty'));

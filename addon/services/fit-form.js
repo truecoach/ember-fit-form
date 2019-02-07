@@ -47,7 +47,7 @@ export default Service.extend({
   lookupAdapter(adapterName) {
     assert('[fit-form] Could not find form adapter without a name.', adapterName);
 
-    const cachedAdapters = get(this, '_Adapters');
+    const cachedAdapters = this._Adapters;
     const cachedAdapter = get(cachedAdapters, adapterName);
 
     if (cachedAdapter) { return cachedAdapter; }
