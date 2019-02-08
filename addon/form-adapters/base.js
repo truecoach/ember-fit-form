@@ -1,8 +1,7 @@
-import { or, readOnly, not } from '@ember/object/computed';
 import emberObject from '@ember/object';
 
 import { all } from 'rsvp';
-import { computed } from '@ember/object';
+import { not, or, readOnly } from '@ember/object/computed';
 import { resolve } from 'rsvp';
 import { task } from 'ember-concurrency';
 
@@ -23,14 +22,10 @@ const Base = emberObject.extend({
   isSubmitting: readOnly('submitTask.isRunning'),
   isValidating: readOnly('validateTask.isRunning'),
 
-  isInvalid: computed('models.@each.validations', function() {
-    return this.get('models').some(m => m.get('validations.isInvalid'));
-  }),
+  isInvalid: false,
   isValid: not('isInvalid'),
 
-  isDirty: computed('models.@each.hasDirtyAttributes', function() {
-    return this.get('models').some(c => c.get('hasDirtyAttributes'));
-  }),
+  isDirty: false,
   isPristine: not('isDirty'),
 
   isSubmittable: not('isUnsubmittable'),
@@ -67,6 +62,7 @@ const Base = emberObject.extend({
     });
   },
 
+  // Support for `model.validate()`
   validateAction() {
     const models = this.get('models');
     const validating = models

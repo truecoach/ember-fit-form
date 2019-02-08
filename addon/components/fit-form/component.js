@@ -20,7 +20,7 @@ const FitFormComponent = Component.extend({
 
   tagName: 'form',
 
-  adapterName: "changeset",
+  adapterName: "ember-changeset",
 
   // ---------------------- Component Hooks ----------------------
   /**

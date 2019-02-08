@@ -1,8 +1,8 @@
-import { readOnly } from '@ember/object/computed';
 import Base from './base';
 import { computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 
-const Changeset = Base.extend({
+const EmberChangesetAdapter = Base.extend({
   changesets: readOnly('models'),
 
   isDirty: computed('changesets.@each.isDirty', function() {
@@ -19,4 +19,4 @@ const Changeset = Base.extend({
   }
 });
 
-export default Changeset;
+export default EmberChangesetAdapter;
