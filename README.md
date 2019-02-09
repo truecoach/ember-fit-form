@@ -1,7 +1,7 @@
 ember-fit-form
 ==============================================================================
 
-*A form component based on the native html form.***
+*A form component which wraps a native `<form>` element and provides form state management abstractions.*
 
 `ember-fit-form` provides flexible state management for
 forms. We aim to support many data and validation libraries
@@ -21,6 +21,8 @@ support promise-aware hooks to manage your applications form state.
 
     Validation Libraries:
     - [ember-changeset-validations](https://github.com/poteto/ember-changeset-validations)
+    
+> Please note that `ember-fit-form` does not provide form control components. It is simply an html form element with abstractions for state management.
 
 Installation
 ------------------------------------------------------------------------------
