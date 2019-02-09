@@ -40,24 +40,24 @@ export default Service.extend({
    * adapters over the addon's adapters.
    *
    * @method lookupAdapter
-   * @param {String} adapterName
+   * @param {String} name
    * @private
    * @return {Adapter} a local adapter or an adapter from the addon
    */
-  lookupAdapter(adapterName) {
-    assert('[fit-form] Could not find form adapter without a name.', adapterName);
+  lookupAdapter(name) {
+    assert('[fit-form] Could not find form adapter without a name.', name);
 
     const cachedAdapters = this._Adapters;
-    const cachedAdapter = get(cachedAdapters, adapterName);
+    const cachedAdapter = get(cachedAdapters, name);
 
     if (cachedAdapter) { return cachedAdapter; }
 
-    const dasherizedAdapterName = dasherize(adapterName);
+    const dasherizedAdapterName = dasherize(name);
     const availableAdapter = getOwner(this).lookup(`ember-fit-form@form-adapter:${dasherizedAdapterName}`);
     const localAdapter = getOwner(this).lookup(`form-adapter:${dasherizedAdapterName}`);
     const adapter = localAdapter ? localAdapter : availableAdapter;
 
-    set(cachedAdapters, adapterName, adapter);
+    set(cachedAdapters, name, adapter);
 
     return adapter;
   }
