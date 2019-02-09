@@ -6,11 +6,7 @@ import { computed } from '@ember/object';
 import { inject } from '@ember/service';
 
 /**
- * Wraps a native `<form>` element and provides abstractions for working with models andmodel-validations.
- *
- * `onSubmit` will be called when the form is submitted with a valid model.
- * @class Ember.FitFormComponent
- * @extends Ember.Component
+ * Wraps a native `<form>` element and provides abstractions for working with models and model validations.
  */
 
 const FitFormComponent = Component.extend({
@@ -33,23 +29,23 @@ const FitFormComponent = Component.extend({
   /**
    * @method onSuccess - Handler for when `onSubmit` succeeds, called when
    * `onSubmit` returns anything other than a rejected Promise
-   * @param FitForm - public interface for the `fit-form` component
    * @param result - result returned from `onSubmit`
+   * @param form - public interface for the `fit-form` component
    */
   onSuccess(){},
 
   /**
    * @method onError - Handler for errors resulting from the `onSubmit` action, called when
    * `onSubmit` returns a rejected Promise
-   * @param FitForm - public interface for the `fit-form` component
    * @param error - error returned from rejected `onSubmit` promise
+   * @param form - public interface for the `fit-form` component
    */
   onError(){},
 
   /**
    * @method onCancel - Handler for the form's cancel behavior. `onCancel` will be called when
    * the form is cancelled
-   * @param FitForm - public interface for the `fit-form` component
+   * @param form - public interface for the `fit-form` component
    */
   onCancel(){},
 
