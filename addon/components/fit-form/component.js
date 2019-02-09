@@ -16,8 +16,6 @@ const FitFormComponent = Component.extend({
 
   tagName: 'form',
 
-  adapterName: "ember-changeset",
-
   // ---------------------- Component Hooks ----------------------
   /**
    * @method onSubmit - Handler for the form's submit behavior. `onSubmit` will be called when
@@ -60,8 +58,8 @@ const FitFormComponent = Component.extend({
     this.get('formObject').submit(...arguments);
   },
 
-  formObject: computed('models.[]', 'adapterName', function() {
-    const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapterName'));
+  formObject: computed('models.[]', 'adapter', function() {
+    const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapter'));
     const emberModelArray = emberArray(makeArray(this.get('models')));
 
     const adapter = Adapter.create({

@@ -63,29 +63,27 @@ save() {
 }
 ```
 
-### Fit-Form Adapters
-By default, `ember-fit-form` expects Changeset objects as the form's models. If you
-would like to use another Object, pass the `adapterName` property:
+### Configure Adapter
 
-``` hbs
-{{#fit-form model adapterName="ember-model" as |form|}}
+By default, `ember-fit-form` expects Changeset models. To setup your default Model type, you should configure the component through `config/environment`:
 
-  <input oninput={{action (mut model.name) value="target.value"}}>
-
-  {{!-- other form content --}}
-
-  <button {{form.cancel}} disabled={{form.isCancelling}}>
-    {{if form.isCancelling "Cancelling..." "Cancel"}}
-  </button>
-
-  <button {{form.submit}} disabled={{form.isUnsubmittable}}>
-    {{if form.isSubmitting "Saving..." "Save"}}
-  </button>
-{{/fit-form}}
+```javascript
+module.exports = function(environment) {
+  var ENV = {
+    emberFitForm: {
+      adapter: 'ember-changeset' // default
+    }
+  }
+}
 ```
 
-#### Configuring Default Adapter
-_Coming Soon_
+In the case that your forms use mixed Models throughout your application, you can overwrite the `adapter` at the component level.
+
+``` hbs
+{{#fit-form model adapter="ember-model"}}
+  {{!-- form content --}}
+{{/fit-form}}
+```
 
 #### Custom Adapters
 _Coming Soon_
