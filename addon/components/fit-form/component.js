@@ -22,7 +22,7 @@ const FitFormComponent = Component.extend({
    * the form is submitted with a valid model.
    * @param FitForm - public interface for the `fit-form` component
    */
-  onSubmit(){},
+  onSubmit: undefined,
 
   /**
    * @method onSuccess - Handler for when `onSubmit` succeeds, called when
@@ -30,7 +30,7 @@ const FitFormComponent = Component.extend({
    * @param result - result returned from `onSubmit`
    * @param form - public interface for the `fit-form` component
    */
-  onSuccess(){},
+  onSuccess: undefined,
 
   /**
    * @method onError - Handler for errors resulting from the `onSubmit` action, called when
@@ -38,14 +38,16 @@ const FitFormComponent = Component.extend({
    * @param error - error returned from rejected `onSubmit` promise
    * @param form - public interface for the `fit-form` component
    */
-  onError(){},
+  onError: undefined,
 
   /**
    * @method onCancel - Handler for the form's cancel behavior. `onCancel` will be called when
    * the form is cancelled
    * @param form - public interface for the `fit-form` component
    */
-  onCancel(){},
+  onCancel: undefined,
+
+  onValidate: undefined,
 
   init() {
     this._super(...arguments);
@@ -62,12 +64,17 @@ const FitFormComponent = Component.extend({
     const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapter'));
     const emberModelArray = emberArray(makeArray(this.get('models')));
 
+    const hooks = [
+      'onCancel', 'onError', 'onSubmit', 'onSuccess', 'onValidate'
+    ].reduce((result, actionName) => {
+      const action = this.get(actionName);
+      if (action) { result[actionName] = action; }
+      return result;
+    }, {});
+
     const adapter = Adapter.create({
       models: emberModelArray,
-      onCancel: this.get('onCancel'),
-      onError: this.get('onError'),
-      onSubmit: this.get('onSubmit'),
-      onSuccess: this.get('onSuccess')
+      ...hooks
     });
 
     // Set the `adapter` as the `this` context for template actions, ie {{action form.submit}}

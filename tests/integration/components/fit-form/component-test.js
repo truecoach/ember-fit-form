@@ -1,9 +1,9 @@
 import Changeset from 'ember-changeset';
 import RSVP from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
-import test from 'ember-sinon-qunit/test-support/test';
+import sinon from 'sinon';
 import { click, triggerKeyEvent } from '@ember/test-helpers';
-import { module } from 'qunit';
+import { module, test } from 'qunit';
 import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
@@ -36,8 +36,8 @@ module('Integration | Component | fit-form', function(hooks) {
       } // pending promise
     });
 
-    const submitSpy = this.spy(this, 'onSubmit');
-    const validateSpy = this.spy(changeset, 'validate');
+    const submitSpy = sinon.spy(this, 'onSubmit');
+    const validateSpy = sinon.spy(changeset, 'validate');
 
     await render(hbs`
     {{#fit-form changeset onSubmit=onSubmit as |form|}}
@@ -79,10 +79,10 @@ module('Integration | Component | fit-form', function(hooks) {
       } // pending promise
     });
 
-    const submitSpy = this.spy(this, 'onSubmit');
+    const submitSpy = sinon.spy(this, 'onSubmit');
     const validateSpies = [
-      this.spy(changeset0, 'validate'),
-      this.spy(changeset1, 'validate')
+      sinon.spy(changeset0, 'validate'),
+      sinon.spy(changeset1, 'validate')
     ];
 
     await render(hbs`
@@ -128,7 +128,7 @@ module('Integration | Component | fit-form', function(hooks) {
       onSubmit()   { return RSVP.resolve('Total Success'); }
     });
 
-    const successSpy = this.spy(this, 'onSuccess');
+    const successSpy = sinon.spy(this, 'onSuccess');
 
     await render(hbs`
     {{#fit-form changeset onSubmit=onSubmit onSuccess=onSuccess as |form|}}
@@ -159,7 +159,7 @@ module('Integration | Component | fit-form', function(hooks) {
       onSubmit() { return RSVP.reject('Sorry not sorry'); }
     });
 
-    const errorSpy = this.spy(this, 'onError');
+    const errorSpy = sinon.spy(this, 'onError');
 
     await render(hbs`
     {{#fit-form changeset onSubmit=onSubmit onError=onError as |form|}}
@@ -180,17 +180,13 @@ module('Integration | Component | fit-form', function(hooks) {
   });
 
   test('Cancelling a form', async function(assert) {
-    assert.expect(3);
+    assert.expect(1);
 
     const changeset = new Changeset({});
 
-    this.setProperties({
-      changeset,
-      onCancel()  {}
-    });
+    this.setProperties({ changeset });
 
-    const cancelSpy = this.spy(this, 'onCancel');
-    const rollbackSpy = this.spy(changeset, 'rollback');
+    const rollbackSpy = sinon.spy(changeset, 'rollback');
 
     await render(hbs`
     {{#fit-form changeset onCancel=onCancel as |form|}}
@@ -200,12 +196,7 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('a');
 
-    assert.ok(cancelSpy.calledOnce, "onCancel was called");
     assert.ok(rollbackSpy.calledOnce, "rollback was called");
-
-    const [ component ] = cancelSpy.getCall(0).args;
-
-    assert.ok(component, 'onCancel is called with the publicAPI as the first arg');
   });
 
   test('invoking the action', async function(assert) {

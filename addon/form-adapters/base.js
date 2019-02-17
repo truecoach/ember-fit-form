@@ -1,6 +1,5 @@
 import emberObject from '@ember/object';
 
-import { all } from 'rsvp';
 import { not, or, readOnly } from '@ember/object/computed';
 import { resolve } from 'rsvp';
 import { task } from 'ember-concurrency';
@@ -12,6 +11,7 @@ const Base = emberObject.extend({
   onError(){},
   onSubmit(){},
   onSuccess(){},
+  onValidate(){},
 
   // ---------------------- Form State ----------------------
   didCancel: or('cancelTask.last.{isError,isSuccessful}'),
@@ -50,26 +50,19 @@ const Base = emberObject.extend({
   },
 
   submitAction(...args) {
-    return this.validate().then(() => {
-      if (this.get('isValid')) {
-        const submission = this.get('onSubmit')(...args, this);
-        return resolve(submission).then((...args) => {
-          return this.get('onSuccess')(...args, this);
-        }, (...args) => {
-          return this.get('onError')(...args, this);
-        });
-      }
+    const validation = this.validate();
+    return resolve(validation).then(() => {
+      const submission = this.get('onSubmit')(...args, this);
+      return resolve(submission).then((...args) => {
+        return this.get('onSuccess')(...args, this);
+      }, (...args) => {
+        return this.get('onError')(...args, this);
+      });
     });
   },
 
-  // Support for `model.validate()`
   validateAction() {
-    const models = this.get('models');
-    const validating = models
-          .filter(m => typeof m.validate === "function")
-          .map(m => m.validate());
-
-    return all(validating);
+    return this.get('onValidate')(...arguments, this);
   }
 });
 
