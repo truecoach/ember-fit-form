@@ -15,7 +15,7 @@ support promise-aware hooks to manage your applications form state.
 
     Validation Libraries:
     - [ember-cp-validations](https://github.com/offirgolan/ember-cp-validations)
-    - [ember-valdiations](https://github.com/DavyJonesLocker/ember-validations)
+    - [ember-validations](https://github.com/DavyJonesLocker/ember-validations)
 
 2. [ember-changeset](https://github.com/poteto/ember-changeset)
 
