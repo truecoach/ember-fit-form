@@ -48,6 +48,7 @@ const FitFormComponent = Component.extend({
   oncancel: undefined,
 
   onvalidate: undefined,
+  oninvalid: undefined,
 
   init() {
     this._super(...arguments);
@@ -65,7 +66,7 @@ const FitFormComponent = Component.extend({
     const emberModelArray = emberArray(makeArray(this.get('models')));
 
     const hooks = [
-      'oncancel', 'onerror', 'onsubmit', 'onsuccess', 'onvalidate'
+      'oncancel', 'onerror', 'oninvalid', 'onsubmit', 'onsuccess', 'onvalidate'
     ].reduce((result, actionName) => {
       const action = this.get(actionName);
       if (action) { result[actionName] = action; }

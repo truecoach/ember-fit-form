@@ -1,7 +1,7 @@
 import emberObject from '@ember/object';
 
 import { not, or, readOnly } from '@ember/object/computed';
-import { reject, resolve } from 'rsvp';
+import { reject } from 'rsvp';
 import { task } from 'ember-concurrency';
 
 const Base = emberObject.extend({
@@ -9,6 +9,7 @@ const Base = emberObject.extend({
 
   oncancel(){},
   onerror(){},
+  oninvalid(){},
   onsubmit(){},
   onsuccess(){},
   onvalidate(){},
@@ -31,42 +32,52 @@ const Base = emberObject.extend({
   isSubmittable: not('isUnsubmittable'),
   isUnsubmittable: or('isPristine', 'isInvalid', 'isSubmitting', 'isCancelling'),
 
-  cancel() { return this.get('cancelTask').perform(...arguments); },
-  submit() { return this.get('submitTask').perform(...arguments); },
-  validate() { return this.get('validateTask').perform(...arguments); },
+  cancel() {
+    return this.get('cancelTask').perform(...arguments);
+  },
+  submit() {
+    return this.get('submitTask').perform(...arguments).then((val) => {
+      this.get('onsuccess')(val, this);
+    }).catch((e) => {
+      if (this.get('validateTask.last.isSuccessful')) {
+        this.get('onerror')(e, this);
+      }
+    });
+  },
+  validate() {
+    return this.get('validateTask').perform(...arguments).catch((e) => {
+      this.get('oninvalid')(e, this);
+    });
+  },
 
   cancelTask: task(function * () {
-    return yield this.cancelAction(...arguments);
+    return yield this.get('oncancel')(...arguments, this);
   }),
+
   submitTask: task(function * () {
-    return yield this.submitAction(...arguments);
+    // validate the form
+    yield this.validate();
+
+    // reject if validation failed
+    if (this.get('validateTask.last.isError')) {
+      return reject();
+    }
+
+    // submit the form
+    return yield this.get('onsubmit')(...arguments, this);
   }),
+
   validateTask: task(function * () {
-    return yield this.validateAction(...arguments);
-  }),
+    // validate the form
+    const validation = yield this.get('onvalidate')(...arguments, this);
 
-  cancelAction() {
-    return this.get('oncancel')(...arguments, this);
-  },
+    // reject validation if return value is false
+    if (validation === false) {
+      return reject();
+    }
 
-  submitAction(...args) {
-    const validation = this.validate();
-    return resolve(validation).then(() => {
-      const submission = this.get('onsubmit')(...args, this);
-      return resolve(submission).then((...args) => {
-        return this.get('onsuccess')(...args, this);
-      }, (...args) => {
-        return this.get('onerror')(...args, this);
-      });
-    });
-  },
-
-  validateAction() {
-    const validation = this.get('onvalidate')(...arguments, this);
-    return resolve(validation).then(isValid => {
-      if (isValid === false) { reject(); }
-    });
-  }
+    return validation;
+  })
 });
 
 export default Base;
