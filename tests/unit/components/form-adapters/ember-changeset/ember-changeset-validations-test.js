@@ -3,6 +3,7 @@ import lookupValidator from 'ember-changeset-validations';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import { setupTest } from 'ember-qunit';
 import { validatePresence } from 'ember-changeset-validations/validators';
 
@@ -70,7 +71,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
 
-        const submission = this.form.submit();
+        const submission = run(() => this.form.submit() );
 
         assert.ok(this.onValidate.calledOnce, "onValidate was called");
         assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
@@ -138,7 +139,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
     test('cancel the form', function(assert) {
       const changesetRollback = sinon.spy(this.post, "rollback");
 
-      this.form.cancel();
+      run(() => this.form.cancel() );
 
       assert.ok(changesetRollback.calledOnce, "chagneset.rollback was called");
     });
@@ -146,7 +147,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
     test('validate the form', function(assert) {
       const changesetValidate = sinon.spy(this.post, "validate");
 
-      this.form.validate();
+      run(() => this.form.validate() );
 
       assert.ok(changesetValidate.calledOnce, "chagneset.validate was called");
     });

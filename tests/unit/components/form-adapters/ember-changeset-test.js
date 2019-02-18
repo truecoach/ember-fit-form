@@ -2,6 +2,7 @@ import Changeset from 'ember-changeset';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import { setupTest } from 'ember-qunit';
 
 module('Unit | Component | form-adapters/ember-changeset', function(hooks) {
@@ -33,11 +34,11 @@ module('Unit | Component | form-adapters/ember-changeset', function(hooks) {
       });
     });
 
-    test('submit the form', function(assert) {
+    test('submit the form', async function(assert) {
       const onSubmit = sinon.spy(this.form, "onSubmit");
       const onSuccess = sinon.spy(this.form, "onSuccess");
 
-      this.form.submit();
+      run(() => this.form.submit() );
 
       assert.ok(onSubmit.calledOnce, "onSubmit was called");
       assert.ok(onSuccess.calledOnce, "onSuccess was called");
@@ -132,7 +133,7 @@ module('Unit | Component | form-adapters/ember-changeset', function(hooks) {
     test('cancel the form', function(assert) {
       const changesetRollback = sinon.spy(this.post, "rollback");
 
-      this.form.cancel();
+      run(() => this.form.cancel() );
 
       assert.ok(changesetRollback.calledOnce, "chagneset.rollback was called");
     });
@@ -140,7 +141,7 @@ module('Unit | Component | form-adapters/ember-changeset', function(hooks) {
     test('validate the form', function(assert) {
       const changesetValidate = sinon.spy(this.post, "validate");
 
-      this.form.validate();
+      run(() => this.form.validate() );
 
       assert.ok(changesetValidate.calledOnce, "chagneset.validate was called");
     });

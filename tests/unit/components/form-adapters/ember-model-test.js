@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import { setupTest } from 'ember-qunit';
 
 module('Unit | Component | form-adapters/ember-model', function(hooks) {
@@ -38,7 +39,7 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
       const onSubmit = sinon.spy(this.form, "onSubmit");
       const onSuccess = sinon.spy(this.form, "onSuccess");
 
-      this.form.submit();
+      run(() => this.form.submit() );
 
       assert.ok(onSubmit.calledOnce, "onSubmit was called");
       assert.ok(onSuccess.calledOnce, "onSuccess was called");
@@ -56,7 +57,7 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
 
   module('with a model', function(hooks) {
     hooks.beforeEach(function() {
-      this.post = this.store.createRecord('post');
+      this.post = run(() => this.store.createRecord('post') );
       this.component.set('models', this.post);
       this.form = this.component.get('formObject');
     });
@@ -119,13 +120,13 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
     test('cancel the form', function(assert) {
       const modelRollback = sinon.spy(this.post, "rollbackAttributes");
 
-      this.form.cancel();
+      run(() => this.form.cancel() );
 
       assert.ok(modelRollback.calledOnce, "model.rollbackAttributes was called");
     });
 
     test('validate the form', function(assert) {
-      this.form.validate();
+      run(() => this.form.validate() );
 
       assert.ok(this.component, "calling validate does not fail");
     });

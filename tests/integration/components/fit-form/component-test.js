@@ -1,8 +1,8 @@
 import Changeset from 'ember-changeset';
-import RSVP from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import { click, triggerKeyEvent } from '@ember/test-helpers';
+import { defer, reject, resolve } from 'rsvp';
 import { module, test } from 'qunit';
 import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
@@ -32,7 +32,7 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       onSubmit() {
-        return RSVP.defer().promise;
+        return defer().promise;
       } // pending promise
     });
 
@@ -75,7 +75,7 @@ module('Integration | Component | fit-form', function(hooks) {
       changeset0,
       changeset1,
       onSubmit() {
-        return RSVP.defer().promise;
+        return defer().promise;
       } // pending promise
     });
 
@@ -125,7 +125,7 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       onSuccess()  { done(); },
-      onSubmit()   { return RSVP.resolve('Total Success'); }
+      onSubmit()   { return resolve('Total Success'); }
     });
 
     const successSpy = sinon.spy(this, 'onSuccess');
@@ -156,7 +156,7 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       onError()  { done(); },
-      onSubmit() { return RSVP.reject('Sorry not sorry'); }
+      onSubmit() { return reject('Sorry not sorry'); }
     });
 
     const errorSpy = sinon.spy(this, 'onError');
