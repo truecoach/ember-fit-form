@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { module, test } from 'qunit';
 import { defer } from 'rsvp';
 import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import { setupTest } from 'ember-qunit';
 
 module('Unit | Component | form-adapters/base', function(hooks) {
@@ -114,26 +115,82 @@ module('Unit | Component | form-adapters/base', function(hooks) {
       assertFormProps(assert, this.form, { isCancelling: false });
     });
 
-    test('validate the form', async function(assert) {
-      const deferred = defer();
-      const onvalidate = sinon.stub(this.form, "onvalidate").returns(deferred.promise);
+    module('validate the form', function(hooks) {
+      hooks.beforeEach(function() {
+        this.deferred = defer();
+        this.onvalidate = sinon.stub(this.form, "onvalidate").returns(this.deferred.promise);
+        this.oninvalid = sinon.spy(this.form, "oninvalid");
+      });
 
-      assertFormProps(assert, this.form, { isValidating: false });
+      test('while validating', function(assert) {
+        this.form.validate();
 
-      const validation = this.form.validate();
+        assertFormProps(assert, this.form, {
+          isValidating: true
+        });
 
-      assertFormProps(assert, this.form, { isValidating: true });
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
 
-      assert.ok(onvalidate.calledOnce, "onvalidate was called");
+        const onvalidateArgs = this.onvalidate.getCall(0).args;
+        assert.equal(onvalidateArgs.length, 1, "onvalidate called with one argument");
+        assert.equal(onvalidateArgs[0], this.form, "onvalidate called with the 'form' as the first argument");
+      });
 
-      const onvalidateArgs = onvalidate.getCall(0).args;
-      assert.equal(onvalidateArgs.length, 1, "onvalidate called with one argument");
-      assert.equal(onvalidateArgs[0], this.form, "onvalidate called with the 'form' as the first argument");
+      test('validating the form is fulfilled', async function(assert) {
+        const validation = this.form.validate();
 
-      deferred.resolve();
-      await validation;
+        this.deferred.resolve(42);
 
-      assertFormProps(assert, this.form, { isValidating: false });
+        await validation;
+
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.notOk(this.oninvalid.called, "oninvalid was never called");
+      });
+
+      test('validating the form is fulfilled with false', async function(assert) {
+        const validation = this.form.validate();
+
+        this.deferred.resolve(false);
+
+        await validation;
+
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
+
+        const oninvalidArgs = this.oninvalid.getCall(0).args;
+        assert.equal(oninvalidArgs[0], undefined, "oninvalid called with undefined as the first argument");
+        assert.equal(oninvalidArgs[1], this.form, "oninvalid called with the 'form' as the second argument");
+      });
+
+      test('validating the form returns false', async function(assert) {
+        this.onvalidate.returns(false);
+        const validation = run(() => this.form.validate() );
+
+        await validation;
+
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
+
+        const oninvalidArgs = this.oninvalid.getCall(0).args;
+        assert.equal(oninvalidArgs[0], undefined, "oninvalid called with undefined as the first argument");
+        assert.equal(oninvalidArgs[1], this.form, "oninvalid called with the 'form' as the second argument");
+      });
+
+      test('validating the form is rejected', async function(assert) {
+        const validation = this.form.validate();
+
+        this.deferred.reject("invalid");
+
+        await validation;
+
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
+
+        const oninvalidArgs = this.oninvalid.getCall(0).args;
+        assert.equal(oninvalidArgs.length, 2, "oninvalid called with two arguments");
+        assert.equal(oninvalidArgs[0], "invalid", "oninvalid called with the validate invalidation as the first argument");
+        assert.equal(oninvalidArgs[1], this.form, "oninvalid called with the 'form' as the second argument");
+      });
     });
   });
 

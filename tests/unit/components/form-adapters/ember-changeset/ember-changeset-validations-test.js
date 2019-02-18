@@ -60,6 +60,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
     module('submit the form', function(hooks) {
       hooks.beforeEach(function() {
+        this.oninvalid = sinon.spy(this.form, "oninvalid");
         this.onvalidate = sinon.spy(this.form, "onvalidate");
         this.onsubmit = sinon.spy(this.form, "onsubmit");
         this.onsuccess = sinon.spy(this.form, "onsuccess");
@@ -71,11 +72,11 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
 
-        const submission = run(() => this.form.submit() );
+        await run(() => this.form.submit() );
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
         assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
-        assert.ok(submission.isError, "the submission was rejected");
 
         assert.notOk(this.onsubmit.called, "onsubmit was never called");
         assert.notOk(changesetSave.called, "changeset.save was never called");
@@ -144,12 +145,59 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
       assert.ok(changesetRollback.calledOnce, "chagneset.rollback was called");
     });
 
-    test('validate the form', function(assert) {
-      const changesetValidate = sinon.spy(this.post, "validate");
+    module('validate the form', function(hooks) {
+      hooks.beforeEach(function() {
+        this.onvalidate = sinon.spy(this.form, "onvalidate");
+        this.oninvalid = sinon.spy(this.form, "oninvalid");
+      });
 
-      run(() => this.form.validate() );
+      test('validating an invalid form fails the validation step', async function(assert) {
+        const changesetValidate = sinon.spy(this.post, "validate");
 
-      assert.ok(changesetValidate.calledOnce, "chagneset.validate was called");
+        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+        await run(() => { this.form.validate(); });
+
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(changesetValidate.called, "changeset.validate was never called");
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
+
+        assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
+      });
+
+      test('validating the form is fulfilled', async function(assert) {
+        const changesetValidate = sinon.stub(this.post, "validate").resolves(42);
+
+        this.post.set('title', 'my post');
+
+        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+
+        await this.form.validate();
+
+        assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.notOk(this.oninvalid.called, "oninvalid was never called");
+        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+      });
+
+      test('validating the form is rejected', async function(assert) {
+        const changesetValidate = sinon.stub(this.post, "validate").rejects("error");
+
+        this.post.set('title', 'my post');
+
+        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+
+        await this.form.validate();
+
+        assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
+        assert.ok(this.oninvalid.called, "oninvalid was called");
+        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+
+        const oninvalidArgs = this.oninvalid.getCall(0).args;
+        assert.equal(oninvalidArgs.length, 2, "oninvalid called with two arguments");
+        assert.equal(oninvalidArgs[0], "error", "oninvalid called with the validate error as the first argument");
+        assert.equal(oninvalidArgs[1], this.form, "oninvalid called with the 'form' as the second argument");
+      });
     });
   });
 });

@@ -138,12 +138,35 @@ module('Unit | Component | form-adapters/ember-changeset', function(hooks) {
       assert.ok(changesetRollback.calledOnce, "chagneset.rollback was called");
     });
 
-    test('validate the form', function(assert) {
-      const changesetValidate = sinon.spy(this.post, "validate");
+    module('validate the form', function(hooks) {
+      hooks.beforeEach(function() {
+        this.oninvalid = sinon.spy(this.form, "oninvalid");
+      });
 
-      run(() => this.form.validate() );
+      test('validating the form is fulfilled', async function(assert) {
+        const changesetValidate = sinon.stub(this.post, "validate").resolves(42);
 
-      assert.ok(changesetValidate.calledOnce, "chagneset.validate was called");
+        await this.form.validate();
+
+        assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
+
+        assert.notOk(this.oninvalid.called, "oninvalid was never called");
+      });
+
+      test('validating the form is rejected', async function(assert) {
+        const changesetValidate = sinon.stub(this.post, "validate").rejects("error");
+
+        await this.form.validate();
+
+        assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
+
+        assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
+
+        const oninvalidArgs = this.oninvalid.getCall(0).args;
+        assert.equal(oninvalidArgs.length, 2, "oninvalid called with two arguments");
+        assert.equal(oninvalidArgs[0], "error", "oninvalid called with the validate error as the first argument");
+        assert.equal(oninvalidArgs[1], this.form, "oninvalid called with the 'form' as the second argument");
+      });
     });
   });
 });
