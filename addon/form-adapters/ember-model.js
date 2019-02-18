@@ -14,20 +14,20 @@ const EmbderModelAdapter = Base.extend({
     return validations.some(v => get(v || {}, 'isInvalid'));
   }),
 
-  onCancel(){
+  oncancel(){
     const form = arguments[arguments.length - 1];
     const models = form.get('models');
     models.forEach(m => m.rollbackAttributes());
   },
 
-  onSubmit(){
+  onsubmit(){
     const form = arguments[arguments.length - 1];
     const models = form.get('models');
     const submitting = models.map(m => m.save());
     return all(submitting);
   },
 
-  onValidate(){
+  onvalidate(){
     const form = arguments[arguments.length - 1];
     const models = form.get('models');
     const validating = models

@@ -36,22 +36,22 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
     });
 
     test('submit the form', function(assert) {
-      const onSubmit = sinon.spy(this.form, "onSubmit");
-      const onSuccess = sinon.spy(this.form, "onSuccess");
+      const onsubmit = sinon.spy(this.form, "onsubmit");
+      const onsuccess = sinon.spy(this.form, "onsuccess");
 
       run(() => this.form.submit() );
 
-      assert.ok(onSubmit.calledOnce, "onSubmit was called");
-      assert.ok(onSuccess.calledOnce, "onSuccess was called");
+      assert.ok(onsubmit.calledOnce, "onsubmit was called");
+      assert.ok(onsuccess.calledOnce, "onsuccess was called");
 
-      const onSubmitArgs = onSubmit.getCall(0).args;
-      assert.equal(onSubmitArgs.length, 1, "onSubmit called with one argument");
-      assert.equal(onSubmitArgs[0], this.form, "onSubmit called with the 'form' as the first argument");
+      const onsubmitArgs = onsubmit.getCall(0).args;
+      assert.equal(onsubmitArgs.length, 1, "onsubmit called with one argument");
+      assert.equal(onsubmitArgs[0], this.form, "onsubmit called with the 'form' as the first argument");
 
-      const onSuccessArgs = onSuccess.getCall(0).args;
-      assert.equal(onSuccessArgs.length, 2, "onSuccess called with two arguments");
-      assert.deepEqual(onSuccessArgs[0], [], "onSubmit called with array of results as the first argument");
-      assert.equal(onSuccessArgs[1], this.form, "onSuccess called with the 'form' as the second argument");
+      const onsuccessArgs = onsuccess.getCall(0).args;
+      assert.equal(onsuccessArgs.length, 2, "onsuccess called with two arguments");
+      assert.deepEqual(onsuccessArgs[0], [], "onsubmit called with array of results as the first argument");
+      assert.equal(onsuccessArgs[1], this.form, "onsuccess called with the 'form' as the second argument");
     });
   });
 
@@ -80,8 +80,8 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
 
     module('submit the form', function(hooks) {
       hooks.beforeEach(function() {
-        this.onSuccess = sinon.spy(this.form, "onSuccess");
-        this.onError = sinon.spy(this.form, "onError");
+        this.onsuccess = sinon.spy(this.form, "onsuccess");
+        this.onerror = sinon.spy(this.form, "onerror");
       });
 
       test('submitting the form is fulfilled', async function(assert) {
@@ -91,13 +91,13 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
 
         assert.ok(modelSave.calledOnce, "model.save was called");
 
-        assert.ok(this.onSuccess.calledOnce, "onSuccess was called");
-        assert.notOk(this.onError.called, "onError was never called");
+        assert.ok(this.onsuccess.calledOnce, "onsuccess was called");
+        assert.notOk(this.onerror.called, "onerror was never called");
 
-        const onSuccessArgs = this.onSuccess.getCall(0).args;
-        assert.equal(onSuccessArgs.length, 2, "onSuccess called with two arguments");
-        assert.equal(onSuccessArgs[0], 42, "onSuccess called with the save result as the first argument");
-        assert.equal(onSuccessArgs[1], this.form, "onSuccess called with the 'form' as the second argument");
+        const onsuccessArgs = this.onsuccess.getCall(0).args;
+        assert.equal(onsuccessArgs.length, 2, "onsuccess called with two arguments");
+        assert.equal(onsuccessArgs[0], 42, "onsuccess called with the save result as the first argument");
+        assert.equal(onsuccessArgs[1], this.form, "onsuccess called with the 'form' as the second argument");
       });
 
       test('submitting the form is rejected', async function(assert) {
@@ -107,13 +107,13 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
 
         assert.ok(modelSave.calledOnce, "model.save was called");
 
-        assert.ok(this.onError.calledOnce, "onError was called");
-        assert.notOk(this.onSuccess.called, "onSuccess was never called");
+        assert.ok(this.onerror.calledOnce, "onerror was called");
+        assert.notOk(this.onsuccess.called, "onsuccess was never called");
 
-        const onErrorArgs = this.onError.getCall(0).args;
-        assert.equal(onErrorArgs.length, 2, "onError called with two arguments");
-        assert.equal(onErrorArgs[0], "error", "onError called with the save error as the first argument");
-        assert.equal(onErrorArgs[1], this.form, "onError called with the 'form' as the second argument");
+        const onerrorArgs = this.onerror.getCall(0).args;
+        assert.equal(onerrorArgs.length, 2, "onerror called with two arguments");
+        assert.equal(onerrorArgs[0], "error", "onerror called with the save error as the first argument");
+        assert.equal(onerrorArgs[1], this.form, "onerror called with the 'form' as the second argument");
       });
     });
 

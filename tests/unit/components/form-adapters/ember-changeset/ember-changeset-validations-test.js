@@ -60,10 +60,10 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
     module('submit the form', function(hooks) {
       hooks.beforeEach(function() {
-        this.onValidate = sinon.spy(this.form, "onValidate");
-        this.onSubmit = sinon.spy(this.form, "onSubmit");
-        this.onSuccess = sinon.spy(this.form, "onSuccess");
-        this.onError = sinon.spy(this.form, "onError");
+        this.onvalidate = sinon.spy(this.form, "onvalidate");
+        this.onsubmit = sinon.spy(this.form, "onsubmit");
+        this.onsuccess = sinon.spy(this.form, "onsuccess");
+        this.onerror = sinon.spy(this.form, "onerror");
       });
 
       test('submitting an invalid form fails the validation step', async function(assert) {
@@ -73,14 +73,14 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         const submission = run(() => this.form.submit() );
 
-        assert.ok(this.onValidate.calledOnce, "onValidate was called");
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
         assert.ok(submission.isError, "the submission was rejected");
 
-        assert.notOk(this.onSubmit.called, "onSubmit was never called");
+        assert.notOk(this.onsubmit.called, "onsubmit was never called");
         assert.notOk(changesetSave.called, "changeset.save was never called");
-        assert.notOk(this.onSuccess.called, "onSuccess was never called");
-        assert.notOk(this.onError.called, "onError was never called");
+        assert.notOk(this.onsuccess.called, "onsuccess was never called");
+        assert.notOk(this.onerror.called, "onerror was never called");
       });
 
       test('submitting the form is fulfilled', async function(assert) {
@@ -92,7 +92,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         const submission = this.form.submit();
 
-        assert.ok(this.onValidate.calledOnce, "onValidate was called");
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.form.get('isValid'), "the form is valid after validation");
         assert.notOk(submission.isError, "the submission passed validation");
 
@@ -100,13 +100,13 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         assert.ok(changesetSave.calledOnce, "changeset.save was called");
 
-        assert.ok(this.onSuccess.calledOnce, "onSuccess was called");
-        assert.notOk(this.onError.called, "onError was never called");
+        assert.ok(this.onsuccess.calledOnce, "onsuccess was called");
+        assert.notOk(this.onerror.called, "onerror was never called");
 
-        const onSuccessArgs = this.onSuccess.getCall(0).args;
-        assert.equal(onSuccessArgs.length, 2, "onSuccess called with two arguments");
-        assert.equal(onSuccessArgs[0], 42, "onSuccess called with the save result as the first argument");
-        assert.equal(onSuccessArgs[1], this.form, "onSuccess called with the 'form' as the second argument");
+        const onsuccessArgs = this.onsuccess.getCall(0).args;
+        assert.equal(onsuccessArgs.length, 2, "onsuccess called with two arguments");
+        assert.equal(onsuccessArgs[0], 42, "onsuccess called with the save result as the first argument");
+        assert.equal(onsuccessArgs[1], this.form, "onsuccess called with the 'form' as the second argument");
       });
 
       test('submitting the form is rejected', async function(assert) {
@@ -118,7 +118,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         const submission = this.form.submit();
 
-        assert.ok(this.onValidate.calledOnce, "onValidate was called");
+        assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.form.get('isValid'), "the form is valid after validation");
         assert.notOk(submission.isError, "the submission passed validation");
 
@@ -126,13 +126,13 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         assert.ok(changesetSave.calledOnce, "changeset.save was called");
 
-        assert.ok(this.onError.calledOnce, "onError was called");
-        assert.notOk(this.onSuccess.called, "onSuccess was never called");
+        assert.ok(this.onerror.calledOnce, "onerror was called");
+        assert.notOk(this.onsuccess.called, "onsuccess was never called");
 
-        const onErrorArgs = this.onError.getCall(0).args;
-        assert.equal(onErrorArgs.length, 2, "onError called with two arguments");
-        assert.equal(onErrorArgs[0], "error", "onError called with the save error as the first argument");
-        assert.equal(onErrorArgs[1], this.form, "onError called with the 'form' as the second argument");
+        const onerrorArgs = this.onerror.getCall(0).args;
+        assert.equal(onerrorArgs.length, 2, "onerror called with two arguments");
+        assert.equal(onerrorArgs[0], "error", "onerror called with the save error as the first argument");
+        assert.equal(onerrorArgs[1], this.form, "onerror called with the 'form' as the second argument");
       });
     });
 

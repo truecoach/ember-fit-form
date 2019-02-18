@@ -18,36 +18,36 @@ const FitFormComponent = Component.extend({
 
   // ---------------------- Component Hooks ----------------------
   /**
-   * @method onSubmit - Handler for the form's submit behavior. `onSubmit` will be called when
+   * @method onsubmit - Handler for the form's submit behavior. `onsubmit` will be called when
    * the form is submitted with a valid model.
    * @param FitForm - public interface for the `fit-form` component
    */
-  onSubmit: undefined,
+  onsubmit: undefined,
 
   /**
-   * @method onSuccess - Handler for when `onSubmit` succeeds, called when
-   * `onSubmit` returns anything other than a rejected Promise
-   * @param result - result returned from `onSubmit`
+   * @method onsuccess - Handler for when `onsubmit` succeeds, called when
+   * `onsubmit` returns anything other than a rejected Promise
+   * @param result - result returned from `onsubmit`
    * @param form - public interface for the `fit-form` component
    */
-  onSuccess: undefined,
+  onsuccess: undefined,
 
   /**
-   * @method onError - Handler for errors resulting from the `onSubmit` action, called when
-   * `onSubmit` returns a rejected Promise
-   * @param error - error returned from rejected `onSubmit` promise
+   * @method onerror - Handler for errors resulting from the `onsubmit` action, called when
+   * `onsubmit` returns a rejected Promise
+   * @param error - error returned from rejected `onsubmit` promise
    * @param form - public interface for the `fit-form` component
    */
-  onError: undefined,
+  onerror: undefined,
 
   /**
-   * @method onCancel - Handler for the form's cancel behavior. `onCancel` will be called when
+   * @method oncancel - Handler for the form's cancel behavior. `oncancel` will be called when
    * the form is cancelled
    * @param form - public interface for the `fit-form` component
    */
-  onCancel: undefined,
+  oncancel: undefined,
 
-  onValidate: undefined,
+  onvalidate: undefined,
 
   init() {
     this._super(...arguments);
@@ -65,7 +65,7 @@ const FitFormComponent = Component.extend({
     const emberModelArray = emberArray(makeArray(this.get('models')));
 
     const hooks = [
-      'onCancel', 'onError', 'onSubmit', 'onSuccess', 'onValidate'
+      'oncancel', 'onerror', 'onsubmit', 'onsuccess', 'onvalidate'
     ].reduce((result, actionName) => {
       const action = this.get(actionName);
       if (action) { result[actionName] = action; }

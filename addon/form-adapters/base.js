@@ -7,11 +7,11 @@ import { task } from 'ember-concurrency';
 const Base = emberObject.extend({
   models: undefined,
 
-  onCancel(){},
-  onError(){},
-  onSubmit(){},
-  onSuccess(){},
-  onValidate(){},
+  oncancel(){},
+  onerror(){},
+  onsubmit(){},
+  onsuccess(){},
+  onvalidate(){},
 
   // ---------------------- Form State ----------------------
   didCancel: or('cancelTask.last.{isError,isSuccessful}'),
@@ -46,23 +46,23 @@ const Base = emberObject.extend({
   }),
 
   cancelAction() {
-    return this.get('onCancel')(...arguments, this);
+    return this.get('oncancel')(...arguments, this);
   },
 
   submitAction(...args) {
     const validation = this.validate();
     return resolve(validation).then(() => {
-      const submission = this.get('onSubmit')(...args, this);
+      const submission = this.get('onsubmit')(...args, this);
       return resolve(submission).then((...args) => {
-        return this.get('onSuccess')(...args, this);
+        return this.get('onsuccess')(...args, this);
       }, (...args) => {
-        return this.get('onError')(...args, this);
+        return this.get('onerror')(...args, this);
       });
     });
   },
 
   validateAction() {
-    return this.get('onValidate')(...arguments, this);
+    return this.get('onvalidate')(...arguments, this);
   }
 });
 

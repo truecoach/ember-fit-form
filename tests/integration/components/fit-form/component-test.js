@@ -31,16 +31,16 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onSubmit() {
+      onsubmit() {
         return defer().promise;
       } // pending promise
     });
 
-    const submitSpy = sinon.spy(this, 'onSubmit');
+    const submitSpy = sinon.spy(this, 'onsubmit');
     const validateSpy = sinon.spy(changeset, 'validate');
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit as |form|}}
       <button {{action "submit" target=form}} disabled={{form.isUnsubmittable}}>
         Save
       </button>
@@ -55,12 +55,12 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('button');
 
-    assert.ok(submitSpy.calledOnce, "onSubmit was called");
+    assert.ok(submitSpy.calledOnce, "onsubmit was called");
     assert.ok(validateSpy.calledOnce, "the changeset was validated");
 
     const [ component ] = submitSpy.getCall(0).args;
 
-    assert.ok(component, 'onSubmit is called with the publicAPI as the first arg');
+    assert.ok(component, 'onsubmit is called with the publicAPI as the first arg');
 
     assert.dom('button').isDisabled('the form is unsubmittable while submitting');
   });
@@ -74,19 +74,19 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset0,
       changeset1,
-      onSubmit() {
+      onsubmit() {
         return defer().promise;
       } // pending promise
     });
 
-    const submitSpy = sinon.spy(this, 'onSubmit');
+    const submitSpy = sinon.spy(this, 'onsubmit');
     const validateSpies = [
       sinon.spy(changeset0, 'validate'),
       sinon.spy(changeset1, 'validate')
     ];
 
     await render(hbs`
-    {{#fit-form changeset0 changeset1 onSubmit=onSubmit as |form|}}
+    {{#fit-form changeset0 changeset1 onsubmit=onsubmit as |form|}}
       <button {{action "submit" target=form}} disabled={{form.isUnsubmittable}}>
         Save
       </button>
@@ -101,12 +101,12 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('button');
 
-    assert.ok(submitSpy.calledOnce, "onSubmit was called");
+    assert.ok(submitSpy.calledOnce, "onsubmit was called");
     assert.ok(validateSpies.every(spy => spy.calledOnce), "each changeset was validated");
 
     const [ component ] = submitSpy.getCall(0).args;
 
-    assert.ok(component, 'onSubmit is called with the publicAPI as the first arg');
+    assert.ok(component, 'onsubmit is called with the publicAPI as the first arg');
 
     assert.dom('button').isDisabled('the form is unsubmittable while submitting');
 
@@ -124,14 +124,14 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onSuccess()  { done(); },
-      onSubmit()   { return resolve('Total Success'); }
+      onsuccess()  { done(); },
+      onsubmit()   { return resolve('Total Success'); }
     });
 
-    const successSpy = sinon.spy(this, 'onSuccess');
+    const successSpy = sinon.spy(this, 'onsuccess');
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onSuccess=onSuccess as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit onsuccess=onsuccess as |form|}}
       <button class="submit" {{action "submit" target=form}}>
         Save
       </button>
@@ -140,12 +140,12 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('.submit');
 
-    assert.ok(successSpy.calledOnce, "onSuccess was called");
+    assert.ok(successSpy.calledOnce, "onsuccess was called");
 
     const [ result, component ] = successSpy.getCall(0).args;
 
-    assert.ok(component, 'onSuccess is called with the publicAPI as the first arg');
-    assert.equal(result, 'Total Success', 'onSuccess is called with the onSubmit resolution as the second arg');
+    assert.ok(component, 'onsuccess is called with the publicAPI as the first arg');
+    assert.equal(result, 'Total Success', 'onsuccess is called with the onsubmit resolution as the second arg');
   });
 
   test('Submitting a form fails', async function(assert) {
@@ -155,14 +155,14 @@ module('Integration | Component | fit-form', function(hooks) {
     const changeset = new Changeset({});
     this.setProperties({
       changeset,
-      onError()  { done(); },
-      onSubmit() { return reject('Sorry not sorry'); }
+      onerror()  { done(); },
+      onsubmit() { return reject('Sorry not sorry'); }
     });
 
-    const errorSpy = sinon.spy(this, 'onError');
+    const errorSpy = sinon.spy(this, 'onerror');
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onError=onError as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit onerror=onerror as |form|}}
       <button class="submit" {{action "submit" target=form}}>
         Save
       </button>
@@ -171,12 +171,12 @@ module('Integration | Component | fit-form', function(hooks) {
 
     await click('.submit');
 
-    assert.ok(errorSpy.calledOnce, 'onError was called');
+    assert.ok(errorSpy.calledOnce, 'onerror was called');
 
     const [ error, component ] = errorSpy.getCall(0).args;
 
-    assert.ok(component, 'onError is called with the publicAPI as the first arg');
-    assert.equal(error, 'Sorry not sorry', 'onError is called with the onSubmit rejection as the second arg');
+    assert.ok(component, 'onerror is called with the publicAPI as the first arg');
+    assert.equal(error, 'Sorry not sorry', 'onerror is called with the onsubmit rejection as the second arg');
   });
 
   test('Cancelling a form', async function(assert) {
@@ -189,7 +189,7 @@ module('Integration | Component | fit-form', function(hooks) {
     const rollbackSpy = sinon.spy(changeset, 'rollback');
 
     await render(hbs`
-    {{#fit-form changeset onCancel=onCancel as |form|}}
+    {{#fit-form changeset oncancel=oncancel as |form|}}
       <a {{action "cancel" target=form}}>Cancel</a>
     {{/fit-form}}
   `);
@@ -206,16 +206,16 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onCancel(form)  {
+      oncancel(form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
       },
-      onSubmit(form)  {
+      onsubmit(form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
       }
     });
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit oncancel=oncancel as |form|}}
       <a {{action form.cancel}}>Cancel</a>
       <button {{action form.submit}}>Submit</button>
     {{/fit-form}}
@@ -232,16 +232,16 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onCancel(form)  {
+      oncancel(form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
       },
-      onSubmit(form)  {
+      onsubmit(form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
       }
     });
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit oncancel=oncancel as |form|}}
       <a {{action "cancel" target=form}}>Cancel</a>
       <button {{action "submit" target=form}}>Submit</button>
     {{/fit-form}}
@@ -258,18 +258,18 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onCancel(event, form)  {
+      oncancel(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       },
-      onSubmit(event, form)  {
+      onsubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       }
     });
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit oncancel=oncancel as |form|}}
       <a onclick={{action form.cancel}}>Cancel</a>
       <button onclick={{action form.submit}} type="button">Submit</button>
     {{/fit-form}}
@@ -286,14 +286,14 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onSubmit(event, form)  {
+      onsubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "submit", "submit event is present");
       }
     });
 
     await render(hbs`
-      {{#fit-form changeset onSubmit=onSubmit as |form|}}
+      {{#fit-form changeset onsubmit=onsubmit as |form|}}
         <button>Submit</button>
       {{/fit-form}}
     `);
@@ -308,14 +308,14 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onSubmit(event, form)  {
+      onsubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "submit", "submit event is present");
       }
     });
 
     await render(hbs`
-      {{#fit-form changeset onSubmit=onSubmit as |form|}}
+      {{#fit-form changeset onsubmit=onsubmit as |form|}}
         <input type="submit">
       {{/fit-form}}
     `);
@@ -330,18 +330,18 @@ module('Integration | Component | fit-form', function(hooks) {
 
     this.setProperties({
       changeset,
-      onCancel(event, form)  {
+      oncancel(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       },
-      onSubmit(event, form)  {
+      onsubmit(event, form)  {
         assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       }
     });
 
     await render(hbs`
-    {{#fit-form changeset onSubmit=onSubmit onCancel=onCancel as |form|}}
+    {{#fit-form changeset onsubmit=onsubmit oncancel=oncancel as |form|}}
       <a onclick={{perform form.cancelTask}}>Cancel</a>
       <button onclick={{perform form.submitTask}} type="button">Cancel</button>
     {{/fit-form}}

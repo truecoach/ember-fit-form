@@ -14,13 +14,13 @@ const EmberChangesetAdapter = Base.extend({
     return this.get('changesets').some(c => c.get('isInvalid'));
   }),
 
-  onCancel(){
+  oncancel(){
     const form = arguments[arguments.length - 1];
     const changesets = form.get('changesets');
     changesets.forEach(c => c.rollback());
   },
 
-  onSubmit(){
+  onsubmit(){
     const form = arguments[arguments.length - 1];
     const changesets = form.get('changesets');
     const submitting = changesets.map(c => c.save());
@@ -28,7 +28,7 @@ const EmberChangesetAdapter = Base.extend({
     return all(submitting);
   },
 
-  onValidate(){
+  onvalidate(){
     const form = arguments[arguments.length - 1];
     const changesets = form.get('changesets');
     const validating = changesets.map(c => c.validate());

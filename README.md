@@ -39,7 +39,7 @@ Usage
 
 ``` hbs
 {{!-- my-form.hbs --}}
-{{#fit-form changeset onCancel=(action rollback) onSubmit=(action save) as |form|}}
+{{#fit-form changeset oncancel=(action rollback) onsubmit=(action save) as |form|}}
 
   <input oninput={{action (mut changeset.name) value="target.value"}}>
 
@@ -96,7 +96,7 @@ _Coming Soon_
 Submits the form.
 
 Submitting a form calls the form's [`validate`](#validate) method and
-then calls the form's [`onSubmit`](#onSubmit) hook if validation
+then calls the form's [`onsubmit`](#onsubmit) hook if validation
 succeeds.
 
 ```js
@@ -109,12 +109,12 @@ form.submit();
 <button onclick={{action form.submit}}>Submit</button>
 ```
 
-> The `onSubmit` hook will never be called if a form [`isInvalid`](#isInvalid).
+> The `onsubmit` hook will never be called if a form [`isInvalid`](#isInvalid).
 
 #### cancel
 Cancels the form.
 
-Cancelling a form calls the form's [`onCancel`](#onCancel) hook.
+Cancelling a form calls the form's [`oncancel`](#oncancel) hook.
 
 ```js
 form.cancel();
@@ -146,12 +146,12 @@ form.validate();
 The `form` object is always curried in as the last argument for all
 component action hooks.
 
-#### `onSubmit`
-The `onSubmit` hook action is a promise-aware action which is called on
+#### `onsubmit`
+The `onsubmit` hook action is a promise-aware action which is called on
 submission of form which [`isValid`](#isValid)
 
 ``` hbs
-{{#fit-form model onSubmit=(action save) as |form|}}
+{{#fit-form model onsubmit=(action save) as |form|}}
   <button {{form.submit}}>Save</button>
 {{/fit-form}}
 ```
@@ -162,12 +162,12 @@ save(/* form */) {
 }
 ```
 
-#### `onSuccess`
+#### `onsuccess`
 
-The `onSuccess` hook is a promise-aware action which is called when the [`onSubmit`](#onSubmit) hook is fulfilled.
+The `onsuccess` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is fulfilled.
 
 ``` hbs
-{{#fit-form model onSuccess=(action success) as |form|}}
+{{#fit-form model onsuccess=(action success) as |form|}}
   <button {{form.submit}}>Save</button>
 {{/fit-form}}
 ```
@@ -180,7 +180,7 @@ success(/* result, form */) {
 
 #### `onError`
 
-The `onError` hook is a promise-aware action which is called when the [`onSubmit`](#onSubmit) hook is rejected.
+The `onError` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is rejected.
 
 ``` hbs
 {{#fit-form model onError=(action error) as |form|}}
@@ -194,11 +194,11 @@ error(/* error, form */) {
 }
 ```
 
-#### `onCancel`
-The `onCancel` hook is a promise-aware action which is called on form cancellation.
+#### `oncancel`
+The `oncancel` hook is a promise-aware action which is called on form cancellation.
 
 ``` hbs
-{{#fit-form model onCancel=(action rollback) as |form|}}
+{{#fit-form model oncancel=(action rollback) as |form|}}
   <button {{form.cancel}}>Cancel</button>
 {{/fit-form}}
 ```
@@ -330,7 +330,7 @@ form.get('isPristine'); // true
 #### isCancelling
 
 Returns a Boolean value of the form's cancelling state. A cancelling
-form is one where the `onCancel` hook is pending. This attribute is
+form is one where the `oncancel` hook is pending. This attribute is
 commonly coupled with the [`cancel`](#cancel) action.
 
 ```js
@@ -344,7 +344,7 @@ form.get('isCancelling'); // true
 #### isSubmitting
 
 Returns a Boolean value of the form's submitting state. A submitting
-form is one where the `onSubmit`, `onSuccess`, or `onError` hooks are
+form is one where the `onsubmit`, `onsuccess`, or `onError` hooks are
 pending. This attribute is commonly coupled with the [`submit`](#submit) action.
 
 ```js
@@ -371,7 +371,7 @@ form.get('isValidating'); // true
 
 #### didCancel
 
-Returns a Boolean value of the form's cancelled state. A cancelled form is one where the [`onCancel`](#onCancel) hooks is settled.
+Returns a Boolean value of the form's cancelled state. A cancelled form is one where the [`oncancel`](#oncancel) hooks is settled.
 
 ```js
 form.get('didSubmit'); // true
@@ -385,7 +385,7 @@ form.get('didSubmit'); // true
 
 #### didSubmit
 
-Returns a Boolean value of the form's submitted state. A submitted form is one where the [`onSubmit`](#onSubmit) hooks is settled.
+Returns a Boolean value of the form's submitted state. A submitted form is one where the [`onsubmit`](#onsubmit) hooks is settled.
 
 ```js
 form.get('didSubmit'); // true

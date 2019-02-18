@@ -37,9 +37,9 @@ module('Unit | Component | form-adapters/base', function(hooks) {
     module('submit the form', function(hooks) {
       hooks.beforeEach(function() {
         this.deferred = defer();
-        this.onSubmit = sinon.stub(this.form, "onSubmit").returns(this.deferred.promise);
-        this.onSuccess = sinon.spy(this.form, "onSuccess");
-        this.onError = sinon.spy(this.form, "onError");
+        this.onsubmit = sinon.stub(this.form, "onsubmit").returns(this.deferred.promise);
+        this.onsuccess = sinon.spy(this.form, "onsuccess");
+        this.onerror = sinon.spy(this.form, "onerror");
       });
 
       test('while submitting', function(assert) {
@@ -50,11 +50,11 @@ module('Unit | Component | form-adapters/base', function(hooks) {
           isSubmitting: true    // Submittability
         });
 
-        assert.ok(this.onSubmit.calledOnce, "onSubmit was called");
+        assert.ok(this.onsubmit.calledOnce, "onsubmit was called");
 
-        const onSubmitArgs = this.onSubmit.getCall(0).args;
-        assert.equal(onSubmitArgs.length, 1, "onSubmit called with one argument");
-        assert.equal(onSubmitArgs[0], this.form, "onSubmit called with the 'form' as the first argument");
+        const onsubmitArgs = this.onsubmit.getCall(0).args;
+        assert.equal(onsubmitArgs.length, 1, "onsubmit called with one argument");
+        assert.equal(onsubmitArgs[0], this.form, "onsubmit called with the 'form' as the first argument");
       });
 
       test('submitting the form is fulfilled', async function(assert) {
@@ -64,14 +64,14 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
         await submission;
 
-        assert.ok(this.onSubmit.calledOnce, "onSubmit was called");
-        assert.ok(this.onSuccess.calledOnce, "onSuccess was called");
-        assert.notOk(this.onError.called, "onError was never called");
+        assert.ok(this.onsubmit.calledOnce, "onsubmit was called");
+        assert.ok(this.onsuccess.calledOnce, "onsuccess was called");
+        assert.notOk(this.onerror.called, "onerror was never called");
 
-        const onSuccessArgs = this.onSuccess.getCall(0).args;
-        assert.equal(onSuccessArgs.length, 2, "onSuccess called with two arguments");
-        assert.equal(onSuccessArgs[0], 42, "onSuccess called with the submit result as the first argument");
-        assert.equal(onSuccessArgs[1], this.form, "onSuccess called with the 'form' as the second argument");
+        const onsuccessArgs = this.onsuccess.getCall(0).args;
+        assert.equal(onsuccessArgs.length, 2, "onsuccess called with two arguments");
+        assert.equal(onsuccessArgs[0], 42, "onsuccess called with the submit result as the first argument");
+        assert.equal(onsuccessArgs[1], this.form, "onsuccess called with the 'form' as the second argument");
       });
 
       test('submitting the form is rejected', async function(assert) {
@@ -81,20 +81,20 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
         await submission;
 
-        assert.ok(this.onSubmit.calledOnce, "onSubmit was called");
-        assert.ok(this.onError.calledOnce, "onError was called");
-        assert.notOk(this.onSuccess.called, "onSuccess was never called");
+        assert.ok(this.onsubmit.calledOnce, "onsubmit was called");
+        assert.ok(this.onerror.calledOnce, "onerror was called");
+        assert.notOk(this.onsuccess.called, "onsuccess was never called");
 
-        const onErrorArgs = this.onError.getCall(0).args;
-        assert.equal(onErrorArgs.length, 2, "onError called with two arguments");
-        assert.equal(onErrorArgs[0], "error", "onError called with the submit error as the first argument");
-        assert.equal(onErrorArgs[1], this.form, "onError called with the 'form' as the second argument");
+        const onerrorArgs = this.onerror.getCall(0).args;
+        assert.equal(onerrorArgs.length, 2, "onerror called with two arguments");
+        assert.equal(onerrorArgs[0], "error", "onerror called with the submit error as the first argument");
+        assert.equal(onerrorArgs[1], this.form, "onerror called with the 'form' as the second argument");
       });
     });
 
     test('cancel the form', async function(assert) {
       const deferred = defer();
-      const onCancel = sinon.stub(this.form, "onCancel").returns(deferred.promise);
+      const oncancel = sinon.stub(this.form, "oncancel").returns(deferred.promise);
 
       assertFormProps(assert, this.form, { isCancelling: false });
 
@@ -102,11 +102,11 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
       assertFormProps(assert, this.form, { isCancelling: true });
 
-      assert.ok(onCancel.calledOnce, "onCancel was called");
+      assert.ok(oncancel.calledOnce, "oncancel was called");
 
-      const onCancelArgs = onCancel.getCall(0).args;
-      assert.equal(onCancelArgs.length, 1, "onCancel called with one argument");
-      assert.equal(onCancelArgs[0], this.form, "onCancel called with the 'form' as the first argument");
+      const oncancelArgs = oncancel.getCall(0).args;
+      assert.equal(oncancelArgs.length, 1, "oncancel called with one argument");
+      assert.equal(oncancelArgs[0], this.form, "oncancel called with the 'form' as the first argument");
 
       deferred.resolve();
       await cancellation;
@@ -116,7 +116,7 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
     test('validate the form', async function(assert) {
       const deferred = defer();
-      const onValidate = sinon.stub(this.form, "onValidate").returns(deferred.promise);
+      const onvalidate = sinon.stub(this.form, "onvalidate").returns(deferred.promise);
 
       assertFormProps(assert, this.form, { isValidating: false });
 
@@ -124,11 +124,11 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
       assertFormProps(assert, this.form, { isValidating: true });
 
-      assert.ok(onValidate.calledOnce, "onValidate was called");
+      assert.ok(onvalidate.calledOnce, "onvalidate was called");
 
-      const onValidateArgs = onValidate.getCall(0).args;
-      assert.equal(onValidateArgs.length, 1, "onValidate called with one argument");
-      assert.equal(onValidateArgs[0], this.form, "onValidate called with the 'form' as the first argument");
+      const onvalidateArgs = onvalidate.getCall(0).args;
+      assert.equal(onvalidateArgs.length, 1, "onvalidate called with one argument");
+      assert.equal(onvalidateArgs[0], this.form, "onvalidate called with the 'form' as the first argument");
 
       deferred.resolve();
       await validation;
