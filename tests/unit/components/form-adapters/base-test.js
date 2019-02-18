@@ -1,6 +1,6 @@
-import RSVP from 'rsvp';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
+import { defer } from 'rsvp';
 import { get } from '@ember/object';
 import { setupTest } from 'ember-qunit';
 
@@ -36,10 +36,10 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
     module('submit the form', function(hooks) {
       hooks.beforeEach(function() {
-        this.defered = RSVP.defer();
-        this.onSubmit = sinon.stub(this.form, "onSubmit").returns(this.defered.promise);
-        this.onSuccess = sinon.stub(this.form, "onSuccess");
-        this.onError = sinon.stub(this.form, "onError");
+        this.deferred = defer();
+        this.onSubmit = sinon.stub(this.form, "onSubmit").returns(this.deferred.promise);
+        this.onSuccess = sinon.spy(this.form, "onSuccess");
+        this.onError = sinon.spy(this.form, "onError");
       });
 
       test('while submitting', function(assert) {
@@ -58,8 +58,11 @@ module('Unit | Component | form-adapters/base', function(hooks) {
       });
 
       test('submitting the form is fulfilled', async function(assert) {
-        this.defered.resolve(42);
-        await this.form.submit();
+        const submission = this.form.submit();
+
+        this.deferred.resolve(42);
+
+        await submission;
 
         assert.ok(this.onSubmit.calledOnce, "onSubmit was called");
         assert.ok(this.onSuccess.calledOnce, "onSuccess was called");
@@ -72,8 +75,11 @@ module('Unit | Component | form-adapters/base', function(hooks) {
       });
 
       test('submitting the form is rejected', async function(assert) {
-        this.defered.reject("error");
-        await this.form.submit();
+        const submission = this.form.submit();
+
+        this.deferred.reject("error");
+
+        await submission;
 
         assert.ok(this.onSubmit.calledOnce, "onSubmit was called");
         assert.ok(this.onError.calledOnce, "onError was called");
@@ -87,8 +93,8 @@ module('Unit | Component | form-adapters/base', function(hooks) {
     });
 
     test('cancel the form', async function(assert) {
-      const defered = RSVP.defer();
-      const onCancel = sinon.stub(this.form, "onCancel").returns(defered.promise);
+      const deferred = defer();
+      const onCancel = sinon.stub(this.form, "onCancel").returns(deferred.promise);
 
       assertFormProps(assert, this.form, { isCancelling: false });
 
@@ -102,15 +108,15 @@ module('Unit | Component | form-adapters/base', function(hooks) {
       assert.equal(onCancelArgs.length, 1, "onCancel called with one argument");
       assert.equal(onCancelArgs[0], this.form, "onCancel called with the 'form' as the first argument");
 
-      defered.resolve();
+      deferred.resolve();
       await cancellation;
 
       assertFormProps(assert, this.form, { isCancelling: false });
     });
 
     test('validate the form', async function(assert) {
-      const defered = RSVP.defer();
-      const onValidate = sinon.stub(this.form, "onValidate").returns(defered.promise);
+      const deferred = defer();
+      const onValidate = sinon.stub(this.form, "onValidate").returns(deferred.promise);
 
       assertFormProps(assert, this.form, { isValidating: false });
 
@@ -124,7 +130,7 @@ module('Unit | Component | form-adapters/base', function(hooks) {
       assert.equal(onValidateArgs.length, 1, "onValidate called with one argument");
       assert.equal(onValidateArgs[0], this.form, "onValidate called with the 'form' as the first argument");
 
-      defered.resolve();
+      deferred.resolve();
       await validation;
 
       assertFormProps(assert, this.form, { isValidating: false });
