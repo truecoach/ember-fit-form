@@ -1,7 +1,7 @@
 import emberObject from '@ember/object';
 
 import { not, or, readOnly } from '@ember/object/computed';
-import { resolve } from 'rsvp';
+import { reject, resolve } from 'rsvp';
 import { task } from 'ember-concurrency';
 
 const Base = emberObject.extend({
@@ -62,7 +62,10 @@ const Base = emberObject.extend({
   },
 
   validateAction() {
-    return this.get('onvalidate')(...arguments, this);
+    const validation = this.get('onvalidate')(...arguments, this);
+    return resolve(validation).then(isValid => {
+      if (isValid === false) { reject(); }
+    });
   }
 });
 

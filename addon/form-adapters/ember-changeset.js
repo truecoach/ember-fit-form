@@ -1,5 +1,5 @@
 import Base from './base';
-import { all, reject, resolve } from 'rsvp';
+import { all } from 'rsvp';
 import { computed } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 
@@ -34,7 +34,7 @@ const EmberChangesetAdapter = Base.extend({
     const validating = changesets.map(c => c.validate());
 
     return all(validating).then(() => {
-      return form.get('isValid') ? resolve() : reject();
+      return form.get('isValid');
     });
   }
 });
