@@ -39,9 +39,9 @@ Usage
 
 ``` hbs
 {{!-- my-form.hbs --}}
-{{#fit-form changeset oncancel=(action rollback) onsubmit=(action save) as |form|}}
+{{#fit-form model oncancel=(action rollback) onsubmit=(action save) as |form|}}
 
-  <input oninput={{action (mut changeset.name) value="target.value"}}>
+  <input oninput={{action (mut model.name) value="target.value"}}>
 
   {{!-- other form content --}}
 
@@ -58,10 +58,10 @@ Usage
 ``` javascript
 // my-form.js
 rollback() {
-  return changeset.rollbackAttributes();
+  return model.rollbackAttributes();
 },
 save() {
-  return changeset.save();
+  return model.save();
 }
 ```
 
@@ -96,8 +96,7 @@ _Coming Soon_
 Submits the form.
 
 Submitting a form calls the form's [`validate`](#validate) method and
-then calls the form's [`onsubmit`](#onsubmit) hook if validation
-succeeds.
+then calls the form's [`onsubmit`](#onsubmit) hook if validation succeeds.
 
 ```js
 form.submit();
@@ -109,7 +108,7 @@ form.submit();
 <button onclick={{action form.submit}}>Submit</button>
 ```
 
-> The `onsubmit` hook will never be called if a form [`isInvalid`](#isInvalid).
+> The `onsubmit` hook will never be called if [`onvalidate`](#onvalidate) hooks is rejected.
 
 #### cancel
 Cancels the form.
@@ -147,8 +146,8 @@ The `form` object is always curried in as the last argument for all
 component action hooks.
 
 #### `onsubmit`
-The `onsubmit` hook action is a promise-aware action which is called on
-submission of form which [`isValid`](#isValid)
+The `onsubmit` hook action is a promise-aware action which is called on form submission.
+Form submission is triggered when calling `form.submit()`.
 
 ``` hbs
 {{#fit-form model onsubmit=(action save) as |form|}}
@@ -161,6 +160,8 @@ save(/* form */) {
   return model.save();
 }
 ```
+
+> The `onsubmit` hook will not be called on form submission if [`onvalidate`](#onvalidate) hooks is rejected.
 
 #### `onsuccess`
 
@@ -195,7 +196,8 @@ error(/* error, form */) {
 ```
 
 #### `oncancel`
-The `oncancel` hook is a promise-aware action which is called on form cancellation.
+The `oncancel` hook is a promise-aware action which is called on form cancellation. 
+Form cancellation is triggered when calling `form.cancel()`.
 
 ``` hbs
 {{#fit-form model oncancel=(action rollback) as |form|}}
@@ -210,9 +212,8 @@ rollback(/* form */) {
 ```
 
 #### `onvalidate`
-The `onvalidate` hook is a promise-aware action which is called on
-form validation. Form validation is triggered when calling `form.validate()`
-or `form.submit()`
+The `onvalidate` hook is a promise-aware action which is called on form validation. 
+Form validation is triggered when calling `form.validate()` or `form.submit()`
 
 On form submission, if `onvalidate` returns a rejected `Promise` or
 `false`, the submission will reject, and `onsubmit` will not be called.
@@ -232,8 +233,7 @@ validate(/* form */) {
 
 #### `oninvalid`
 
-The `oninvalid` hook is a promise-aware action which is called when
-the [`onvalidate`](#onvalidate) hook is rejected or returns `false`.
+The `oninvalid` hook is a promise-aware action which is called when the [`onvalidate`](#onvalidate) hook is rejected or returns `false`.
 
 ``` hbs
 {{#fit-form model oninvalid=(action invalid) as |form|}}
@@ -301,7 +301,7 @@ form.get('isUnsubmittable'); // true
 <button {{action form.submit}} disabled={{form.isUnsubmittable}}>Submit</button>
 ```
 
-> You can still call [`submit`](#submit) if a form `isUnsubmittable`.
+> You can still call [`submit`](#submit) if `isUnsubmittable` is true.
 
 #### isSubmittable
 
