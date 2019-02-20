@@ -178,12 +178,12 @@ success(/* result, form */) {
 }
 ```
 
-#### `onError`
+#### `onerror`
 
-The `onError` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is rejected.
+The `onerror` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is rejected.
 
 ``` hbs
-{{#fit-form model onError=(action error) as |form|}}
+{{#fit-form model onerror=(action error) as |form|}}
   <button {{form.submit}}>Save</button>
 {{/fit-form}}
 ```
@@ -204,8 +204,46 @@ The `oncancel` hook is a promise-aware action which is called on form cancellati
 ```
 
 ``` javascript
-rollback() {
+rollback(/* form */) {
   return model.rollback();
+}
+```
+
+#### `onvalidate`
+The `onvalidate` hook is a promise-aware action which is called on
+form validation. Form validation is triggered when calling `form.validate()`
+or `form.submit()`
+
+On form submission, if `onvalidate` returns a rejected `Promise` or
+`false`, the submission will reject, and `onsubmit` will not be called.
+
+``` hbs
+{{#fit-form model onvalidate=(action validate) as |form|}}
+  <button {{form.validate}}>Check Fields</button>
+  <button {{form.submit}}>Save</button>
+{{/fit-form}}
+```
+
+``` javascript
+validate(/* form */) {
+  return model.validate();
+}
+```
+
+#### `oninvalid`
+
+The `oninvalid` hook is a promise-aware action which is called when
+the [`onvalidate`](#onvalidate) hook is rejected or returns `false`.
+
+``` hbs
+{{#fit-form model oninvalid=(action invalid) as |form|}}
+  <button {{form.submit}}>Save</button>
+{{/fit-form}}
+```
+
+``` javascript
+invalid(/* error, form */) {
+  // Do something
 }
 ```
 
@@ -344,7 +382,7 @@ form.get('isCancelling'); // true
 #### isSubmitting
 
 Returns a Boolean value of the form's submitting state. A submitting
-form is one where the `onsubmit`, `onsuccess`, or `onError` hooks are
+form is one where the `onsubmit`, `onsuccess`, or `onerror` hooks are
 pending. This attribute is commonly coupled with the [`submit`](#submit) action.
 
 ```js
