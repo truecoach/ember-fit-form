@@ -21,7 +21,7 @@ support promise-aware hooks to manage your applications form state.
 
     Validation Libraries:
     - [ember-changeset-validations](https://github.com/poteto/ember-changeset-validations)
-    
+
 > Please note that `ember-fit-form` does not provide form control components. It is simply an html form element with abstractions for state management.
 
 Installation
@@ -40,7 +40,6 @@ Usage
 ``` hbs
 {{!-- my-form.hbs --}}
 {{#fit-form model oncancel=(action rollback) onsubmit=(action save) as |form|}}
-
   <input oninput={{action (mut model.name) value="target.value"}}>
 
   {{!-- other form content --}}
@@ -90,9 +89,39 @@ In the case that your forms use mixed Models throughout your application, you ca
 #### Custom Adapters
 _Coming Soon_
 
+## API
+* Actions
++ [`submit`](#submit)
++ [`cancel`](#cancel)
++ [`validate`](#validate)
+* Component Action Hooks
++ [`onsubmit`](#onsubmit)
++ [`onsuccess`](#onsuccess)
++ [`onerror`](#onerror)
++ [`oncancel`](#oncancel)
++ [`onvalidate`](#onvalidate)
++ [`oninvalid`](#oninvalid)
+* Component Event Handler Hooks
++ [`onkeydown`](#onkeydown)
++ [`onkeyup`](#onkeyup)
++ [`keypress`](#keypress)
+* Attributes
++ [`isUnsubmittable`](#isUnsubmittable)
++ [`isSubmittable`](#isSubmittable)
++ [`isValid`](#isValid)
++ [`isInvalid`](#isInvalid)
++ [`isDirty`](#isDirty)
++ [`isPristine`](#isPristine)
++ [`isCancelling`](#isCancelling)
++ [`isSubmitting`](#isSubmitting)
++ [`isValidating`](#isValidating)
++ [`didCancel`](#didCancel)
++ [`didSubmit`](#didSubmit)
++ [`didValidate`](#didValidate)
+
 ### Fit-Form Actions
 
-#### submit
+#### `submit`
 Submits the form.
 
 Submitting a form calls the form's [`validate`](#validate) method and
@@ -110,9 +139,10 @@ form.submit();
 
 > The `onsubmit` hook will never be called if [`onvalidate`](#onvalidate) hooks is rejected.
 
-#### cancel
-Cancels the form.
+**[⬆️ back to top](#api)**
 
+#### `cancel`
+Cancels the form.
 Cancelling a form calls the form's [`oncancel`](#oncancel) hook.
 
 ```js
@@ -125,11 +155,11 @@ form.cancel();
 <button onclick={{action form.cancel}}>Cancel</button>
 ```
 
-#### validate
+**[⬆️ back to top](#api)**
+
+#### `validate`
 Validates the form.
-
 Validating a form calls the validate action for each of the form's models.
-
 
 ```js
 form.validate();
@@ -140,6 +170,8 @@ form.validate();
 {{!-- or --}}
 <button onclick={{action form.validate}}>Check Validity</button>
 ```
+
+**[⬆️ back to top](#api)**
 
 ### Fit-Form Component Action Hooks
 The `form` object is always curried in as the last argument for all
@@ -163,8 +195,9 @@ save(/* form */) {
 
 > The `onsubmit` hook will not be called on form submission if [`onvalidate`](#onvalidate) hooks is rejected.
 
-#### `onsuccess`
+**[⬆️ back to top](#api)**
 
+#### `onsuccess`
 The `onsuccess` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is fulfilled.
 
 ``` hbs
@@ -179,8 +212,9 @@ success(/* result, form */) {
 }
 ```
 
-#### `onerror`
+**[⬆️ back to top](#api)**
 
+#### `onerror`
 The `onerror` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is rejected.
 
 ``` hbs
@@ -195,8 +229,10 @@ error(/* error, form */) {
 }
 ```
 
+**[⬆️ back to top](#api)**
+
 #### `oncancel`
-The `oncancel` hook is a promise-aware action which is called on form cancellation. 
+The `oncancel` hook is a promise-aware action which is called on form cancellation.
 Form cancellation is triggered when calling `form.cancel()`.
 
 ``` hbs
@@ -211,10 +247,11 @@ rollback(/* form */) {
 }
 ```
 
-#### `onvalidate`
-The `onvalidate` hook is a promise-aware action which is called on form validation. 
-Form validation is triggered when calling `form.validate()` or `form.submit()`
+**[⬆️ back to top](#api)**
 
+#### `onvalidate`
+The `onvalidate` hook is a promise-aware action which is called on form validation.
+Form validation is triggered when calling `form.validate()` or `form.submit()`
 On form submission, if `onvalidate` returns a rejected `Promise` or
 `false`, the submission will reject, and `onsubmit` will not be called.
 
@@ -231,8 +268,9 @@ validate(/* form */) {
 }
 ```
 
-#### `oninvalid`
+**[⬆️ back to top](#api)**
 
+#### `oninvalid`
 The `oninvalid` hook is a promise-aware action which is called when the [`onvalidate`](#onvalidate) hook is rejected or returns `false`.
 
 ``` hbs
@@ -247,11 +285,13 @@ invalid(/* error, form */) {
 }
 ```
 
+**[⬆️ back to top](#api)**
+
 ### Fit-Form Component Event Handler Hooks
 The `form` object is always curried in as the last argument for all
 component event handler hooks.
 
-#### onkeydown
+#### `onkeydown`
 When `onkeydown` is passed into `fit-form` component, it registers the
 `keyDown` event on the html form element. The `onkeydown` hook is called when
 the `keyDown` event is triggered.
@@ -267,30 +307,35 @@ handlekey(event, form) {
   if (event.key === "Enter" && event.shiftKey) {
     // Shift + Enter
     form.submit();
-  } else if (event.key === "Escape")
+  } else if (event.key === "Escape") {
     form.cancel();
   }
 }
 ```
 
-#### onkeyup
+**[⬆️ back to top](#api)**
+
+#### `onkeyup`
 When `onkeyup` is passed into `fit-form` component, it registers the
 `keyUp` event on the html form element. The `onkeyup` hook is called when
 the `keyUp` event is triggered.
 
 See [`onkeydown`](#onkeydown) example for usage.
 
-#### keypress
+**[⬆️ back to top](#api)**
+
+#### `keypress`
 When `onkeypress` is passed into `fit-form` component, it registers the
 `keyPress` event on the html form element. The `onkeypress` hook is called when
 the `keyPress` event is triggered.
 
 See [`onkeydown`](#onkeydown) example for usage.
 
+**[⬆️ back to top](#api)**
+
 ### Fit-Form Attributes
 
-#### isUnsubmittable
-
+#### `isUnsubmittable`
 Returns a Boolean value of the form's (un)submittability.
 
 ```js
@@ -303,8 +348,9 @@ form.get('isUnsubmittable'); // true
 
 > You can still call [`submit`](#submit) if `isUnsubmittable` is true.
 
-#### isSubmittable
+**[⬆️ back to top](#api)**
 
+#### `isSubmittable`
 Returns a Boolean value of the form's submittability.
 
 ```js
@@ -317,8 +363,9 @@ form.get('isSubmittable'); // true
 {{/if}}
 ```
 
-#### isValid
+**[⬆️ back to top](#api)**
 
+#### `isValid`
 Returns a Boolean value of the form's validity. A valid form is one
 where all of the form's models are valid.
 
@@ -332,8 +379,9 @@ form.get('isValid'); // true
 {{/if}}
 ```
 
-#### isInvalid
+**[⬆️ back to top](#api)**
 
+#### `isInvalid`
 Returns a Boolean value of the form's (in)validity. A invalid form is one
 where the some of the form's models are invalid.
 
@@ -347,8 +395,9 @@ form.get('isInvalid'); // true
 {{/if}}
 ```
 
-#### isDirty
+**[⬆️ back to top](#api)**
 
+#### `isDirty`
 Returns a Boolean value of the form's state. A dirty form is one with
 changes.
 
@@ -356,8 +405,9 @@ changes.
 form.get('isDirty'); // true
 ```
 
-#### isPristine
+**[⬆️ back to top](#api)**
 
+#### `isPristine`
 Returns a Boolean value of the form's state. A pristine form is one
 with no changes.
 
@@ -365,8 +415,9 @@ with no changes.
 form.get('isPristine'); // true
 ```
 
-#### isCancelling
+**[⬆️ back to top](#api)**
 
+#### `isCancelling`
 Returns a Boolean value of the form's cancelling state. A cancelling
 form is one where the `oncancel` hook is pending. This attribute is
 commonly coupled with the [`cancel`](#cancel) action.
@@ -379,8 +430,9 @@ form.get('isCancelling'); // true
 <button {{action form.cancel}} disabled={{form.isCancelling}}>Cancel</button>
 ```
 
-#### isSubmitting
+**[⬆️ back to top](#api)**
 
+#### `isSubmitting`
 Returns a Boolean value of the form's submitting state. A submitting
 form is one where the `onsubmit`, `onsuccess`, or `onerror` hooks are
 pending. This attribute is commonly coupled with the [`submit`](#submit) action.
@@ -393,8 +445,9 @@ form.get('isSubmitting'); // true
 <button {{action form.submit}} disabled={{form.isSubmitting}}>Submit</button>
 ```
 
-#### isValidating
+**[⬆️ back to top](#api)**
 
+#### `isValidating`
 Returns a Boolean value of the form's validating state. A validating form is one where the form's model(s) are validating upon form submission.
 
 ```js
@@ -407,8 +460,9 @@ form.get('isValidating'); // true
 {{/if}}
 ```
 
-#### didCancel
+**[⬆️ back to top](#api)**
 
+#### `didCancel`
 Returns a Boolean value of the form's cancelled state. A cancelled form is one where the [`oncancel`](#oncancel) hooks is settled.
 
 ```js
@@ -421,8 +475,9 @@ form.get('didSubmit'); // true
 {{/if}}
 ```
 
-#### didSubmit
+**[⬆️ back to top](#api)**
 
+#### `didSubmit`
 Returns a Boolean value of the form's submitted state. A submitted form is one where the [`onsubmit`](#onsubmit) hooks is settled.
 
 ```js
@@ -435,8 +490,9 @@ form.get('didSubmit'); // true
 {{/if}}
 ```
 
-#### didValidate
+**[⬆️ back to top](#api)**
 
+#### `didValidate`
 Returns a Boolean value of the form's validated state. A validated form is one where the form's model(s) were validated upon form submission.
 
 ```js
@@ -448,3 +504,5 @@ form.get('didValidate'); // true
   <span class='error'>{{model.errors}}</span>
 {{/if}}
 ```
+
+**[⬆️ back to top](#api)**
