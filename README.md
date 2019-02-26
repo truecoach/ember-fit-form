@@ -174,12 +174,18 @@ form.validate();
 **[⬆️ back to top](#api)**
 
 ### Fit-Form Component Action Hooks
-The `form` object is always curried in as the last argument for all
-component action hooks.
+Fit-Form adapters each contain action hooks. Some hooks call default functions, to reduce overall boilerplate code. For example, the `ember-changeset` adapter's `onsubmit` hook calls `changeset.save()` on each changeset by default. Declaring an `onsubmit` action on the component will override this behavior.
+
+See default component action hook behavior:
+[ember-changeset](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-changeset.js#L17-L39)
+[ember-model](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-model.js#L17-L38)
+
+The `form` object is always curried in as the last argument for all component action hooks.
 
 #### `onsubmit`
 The `onsubmit` hook action is a promise-aware action which is called on form submission.
 Form submission is triggered when calling `form.submit()`.
+
 
 ``` hbs
 {{#fit-form model onsubmit=(action save) as |form|}}
