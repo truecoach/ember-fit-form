@@ -104,7 +104,7 @@ _Coming Soon_
 * Component Event Handler Hooks
 + [`onkeydown`](#onkeydown)
 + [`onkeyup`](#onkeyup)
-+ [`keypress`](#keypress)
++ [`onkeypress`](#onkeypress)
 * Attributes
 + [`isUnsubmittable`](#isUnsubmittable)
 + [`isSubmittable`](#isSubmittable)
@@ -324,7 +324,7 @@ See [`onkeydown`](#onkeydown) example for usage.
 
 **[⬆️ back to top](#api)**
 
-#### `keypress`
+#### `onkeypress`
 When `onkeypress` is passed into `fit-form` component, it registers the
 `keyPress` event on the html form element. The `onkeypress` hook is called when
 the `keyPress` event is triggered.
