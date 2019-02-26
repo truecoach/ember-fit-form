@@ -177,8 +177,8 @@ form.validate();
 Fit-Form adapters each contain action hooks. Some hooks call default functions, to reduce overall boilerplate code. For example, the `ember-changeset` adapter's `onsubmit` hook calls `changeset.save()` on each changeset by default. Declaring an `onsubmit` action on the component will override this behavior.
 
 See default component action hook behavior:
-[ember-changeset](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-changeset.js#L17-L39)
-[ember-model](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-model.js#L17-L38)
+- [ember-changeset](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-changeset.js#L17-L39)
+- [ember-model](https://github.com/fitbotinc/ember-fit-form/blob/master/addon/form-adapters/ember-model.js#L17-L38)
 
 The `form` object is always curried in as the last argument for all component action hooks.
 
