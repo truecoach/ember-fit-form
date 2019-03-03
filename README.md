@@ -64,7 +64,7 @@ save() {
 }
 ```
 
-### Configure Adapter
+### Configuration
 
 By default, `ember-fit-form` expects Changeset models. To setup your default Model type, you should configure the component through `config/environment`:
 
@@ -85,9 +85,6 @@ In the case that your forms use mixed Models throughout your application, you ca
   {{!-- form content --}}
 {{/fit-form}}
 ```
-
-#### Custom Adapters
-_Coming Soon_
 
 ## API
 * Actions
@@ -512,3 +509,34 @@ form.get('didValidate'); // true
 ```
 
 **[⬆️ back to top](#api)**
+
+### Custom Adapters
+Generate a form adapter
+> $ ember generate form-adapter foo-bar
+
+This creates `app/form-adapters/foo-bar.js` and a unit test at `tests/unit/form-adapters/foo-bar-test.js`. By default, the form-adapter extends the `base` adapter. 
+
+#### Example - extend `ember-changeset` form-adapter
+
+In this example, we'll extend the `ember-changeset` form-adapter. We will overwrite the default `oncancel` action to never call `rollbackAttributes()` on the Changesets.
+
+- Generate `form-adapter`
+  > ember g form-adapter ember-changeset/no-rollbacks
+
+- Extend the `ember-changeset` `form-adapter`
+  ``` js
+  // app/form-adapters/ember-changeset/no-rollbacks;
+  import EmberChangesetAdapter from 'ember-fit-form/form-adapters/ember-changeset';
+  export default EmberChangesetAdapter.extend({
+    oncancel() { /* noop - ie. no rollbackAttributes */ }
+  });
+  ```
+
+- Define adapter on component or [configuration](#configuration)
+  ```hbs
+  {{!-- my-template.hbs --}}
+  {{#fit-form changeset adapter="ember-changeset/no-rollbacks"}}
+    {{!-- other form content --}}
+  {{/fit-form}}
+  ```
+

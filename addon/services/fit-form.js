@@ -57,6 +57,8 @@ export default Service.extend({
     const localAdapter = getOwner(this).lookup(`form-adapter:${dasherizedAdapterName}`);
     const adapter = localAdapter ? localAdapter : availableAdapter;
 
+    assert(`[fit-form] Could not find a form adapter named ${name}`, adapter);
+
     set(cachedAdapters, name, adapter);
 
     return adapter;
