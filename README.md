@@ -87,22 +87,25 @@ In the case that your forms use mixed Models throughout your application, you ca
 ```
 
 ## API
-* Actions
+* [Actions](#fit-form-actions)
 + [`submit`](#submit)
 + [`cancel`](#cancel)
 + [`validate`](#validate)
-* Component Action Hooks
+
+* [Action Hooks](#fit-form-component-action-hooks)
 + [`onsubmit`](#onsubmit)
 + [`onsuccess`](#onsuccess)
 + [`onerror`](#onerror)
 + [`oncancel`](#oncancel)
 + [`onvalidate`](#onvalidate)
 + [`oninvalid`](#oninvalid)
-* Component Event Handler Hooks
+
+* [Event Handler Hooks](#fit-form-component-event-handler-hooks)
 + [`onkeydown`](#onkeydown)
 + [`onkeyup`](#onkeyup)
 + [`onkeypress`](#onkeypress)
-* Attributes
+
+* [Attributes](#fit-form-attributes)
 + [`isUnsubmittable`](#isUnsubmittable)
 + [`isSubmittable`](#isSubmittable)
 + [`isValid`](#isValid)
@@ -116,7 +119,9 @@ In the case that your forms use mixed Models throughout your application, you ca
 + [`didSubmit`](#didSubmit)
 + [`didValidate`](#didValidate)
 
+
 ### Fit-Form Actions
+------------------------------------------------------------------------------
 
 #### `submit`
 Submits the form.
@@ -170,7 +175,10 @@ form.validate();
 
 **[⬆️ back to top](#api)**
 
+
 ### Fit-Form Component Action Hooks
+------------------------------------------------------------------------------
+
 Fit-Form adapters each contain action hooks. Some hooks call default functions, to reduce overall boilerplate code. For example, the `ember-changeset` adapter's `onsubmit` hook calls `changeset.save()` on each changeset by default. Declaring an `onsubmit` action on the component will override this behavior.
 
 See default component action hook behavior:
@@ -291,6 +299,8 @@ invalid(/* error, form */) {
 **[⬆️ back to top](#api)**
 
 ### Fit-Form Component Event Handler Hooks
+------------------------------------------------------------------------------
+
 The `form` object is always curried in as the last argument for all
 component event handler hooks.
 
@@ -337,6 +347,7 @@ See [`onkeydown`](#onkeydown) example for usage.
 **[⬆️ back to top](#api)**
 
 ### Fit-Form Attributes
+------------------------------------------------------------------------------
 
 #### `isUnsubmittable`
 Returns a Boolean value of the form's (un)submittability.
@@ -511,6 +522,8 @@ form.get('didValidate'); // true
 **[⬆️ back to top](#api)**
 
 ### Custom Adapters
+------------------------------------------------------------------------------
+
 Generate a form adapter
 > $ ember generate form-adapter foo-bar
 
