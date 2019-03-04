@@ -326,6 +326,8 @@ handlekey(event, form) {
 }
 ```
 
+> `return true;` to bubble the event. This is useful if you still want the form to handle the [submit event](https://developer.mozilla.org/en-US/docs/Web/Events/submit).
+
 **[⬆️ back to top](#api)**
 
 #### `onkeyup`
