@@ -5,11 +5,13 @@
   "keywords": [
     "ember-addon"
   ],
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/truecoach/ember-fit-form.git"
+  },
   "license": "MIT",
   "author": "TrueCoach",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {
@@ -58,5 +60,9 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/truecoach/ember-fit-form/issues"
+  },
+  "homepage": "https://github.com/truecoach/ember-fit-form#readme"
 }
