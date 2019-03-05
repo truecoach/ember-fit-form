@@ -1,6 +1,9 @@
 ember-fit-form
 ==============================================================================
 
+[![npm version](https://badge.fury.io/js/ember-fit-form.svg)](https://badge.fury.io/js/ember-fit-form)
+[![Build Status](https://travis-ci.org/fitbotinc/ember-fit-form.svg?branch=master)](https://travis-ci.org/fitbotinc/ember-fit-form)
+
 *A form component which wraps a native `<form>` element and provides form state management abstractions.*
 
 `ember-fit-form` provides flexible state management for
