@@ -9,19 +9,6 @@ for use within your application's forms. We're also built on
 [ember-concurrency](http://ember-concurrency.com/), so you can easily
 support promise-aware hooks to manage your applications form state.
 
-**Currently supported data models:**
-
-1. [ember-data](https://emberjs.com/api/ember-data/release/classes/DS.Model)
-
-    Validation Libraries:
-    - [ember-cp-validations](https://github.com/offirgolan/ember-cp-validations)
-    - [ember-validations](https://github.com/DavyJonesLocker/ember-validations)
-
-2. [ember-changeset](https://github.com/poteto/ember-changeset)
-
-    Validation Libraries:
-    - [ember-changeset-validations](https://github.com/poteto/ember-changeset-validations)
-
 > Please note that `ember-fit-form` does not provide form control components. It is simply an html form element with abstractions for state management.
 
 Installation
@@ -44,11 +31,11 @@ Usage
 
   {{!-- other form content --}}
 
-  <button {{form.cancel}} disabled={{form.isCancelling}}>
+  <button {{action form.cancel}} disabled={{form.isCancelling}}>
     {{if form.isCancelling "Cancelling..." "Cancel"}}
   </button>
 
-  <button {{form.submit}} disabled={{form.isUnsubmittable}}>
+  <button {{action form.submit}} disabled={{form.isUnsubmittable}}>
     {{if form.isSubmitting "Saving..." "Save"}}
   </button>
 {{/fit-form}}
@@ -64,9 +51,54 @@ save() {
 }
 ```
 
+### Form Adapters
+This addon supports various data and validation libraries for use within your application's forms. You can even write your own [custom adapters](#custom-adapters).
+
+**Built-in Adapters**
+1. `ember-changeset` (default)
+    
+    [ember-changeset](https://github.com/poteto/ember-changeset) model adapter
+    
+    Supported Validation Libraries:
+    - [ember-changeset-validations](https://github.com/poteto/ember-changeset-validations)
+    
+2. `ember-model`
+    
+    [ember-data](https://emberjs.com/api/ember-data/release/classes/DS.Model) model adapter
+    
+    Supported Validation Libraries:
+    - [ember-cp-validations](https://github.com/offirgolan/ember-cp-validations)
+    - [ember-validations](https://github.com/DavyJonesLocker/ember-validations)
+    
+Each form adapter defines its own form [action hooks](#fit-form-component-action-hooks), such as [onsubmit](#onsubmit) and [oncancel](#oncancel). The default behavior of these actions can be overwritten by passing `onsubmit` and `oncancel` into the component invocation. Please see [source code](https://github.com/fitbotinc/ember-fit-form/tree/master/addon/form-adapters) for specifics on an adapter's default action hooks.
+
+**ex: `onsubmit` not passed to component**
+
+When `onsubmit` is not explicitly passed into the component, the form's default `onsubmit` action will be called on form submission.
+
+```hbs
+{{#fit-form models}}
+  <!-- form.submit calls form adapter's default `onsubmit` action -->
+  <button {{action form.submit}}>Save</button> 
+{{/fit-form}}
+```
+
+**ex: `onsubmit` passed to component**
+
+When `onsubmit` is explicitly passed into the component, it will call this action in favor of the form's default `onsubmit` action on form submission.
+
+```hbs
+{{#fit-form models onsubmit=(action "submitMe"}}
+  <!-- form.submit calls "submitMe" action -->
+  <button {{action form.submit}}>Save</button>
+{{/fit-form}}
+```
+
+
+
 ### Configuration
 
-By default, `ember-fit-form` expects Changeset models. To setup your default Model type, you should configure the component through `config/environment`:
+By default, `ember-fit-form` uses the `ember-changeset` adapter which expects Changeset models. To setup your default Model, you should configure the addon through `config/environment`:
 
 ```javascript
 module.exports = function(environment) {
@@ -78,7 +110,7 @@ module.exports = function(environment) {
 }
 ```
 
-In the case that your forms use mixed Models throughout your application, you can overwrite the `adapter` at the component level.
+In the case that your forms use various Models throughout the application, you can overwrite the `adapter` at the component level.
 
 ``` hbs
 {{#fit-form model adapter="ember-model"}}
