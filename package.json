@@ -1,13 +1,13 @@
 {
   "name": "ember-fit-form",
   "version": "1.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "A flexible component for form state management with data model adapters.",
   "keywords": [
     "ember-addon"
   ],
   "repository": "",
   "license": "MIT",
-  "author": "",
+  "author": "TrueCoach",
   "directories": {
     "doc": "doc",
     "test": "tests"
