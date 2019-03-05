@@ -74,18 +74,18 @@ Each form adapter defines its own form [action hooks](#fit-form-component-action
 
 **ex: `onsubmit` not passed to component**
 
-When `onsubmit` is not explicitly passed into the component, the form's default `onsubmit` action will be called on form submission.
+When `onsubmit` is not explicitly passed into the component, [the adapter's default `onsubmit` action](https://github.com/fitbotinc/ember-fit-form/blob/06f42fc224792bb85ecbfb35f563a7aad22b3420/addon/form-adapters/ember-changeset.js#L23-L29) will be called on form submission.
 
 ```hbs
 {{#fit-form models}}
-  <!-- form.submit calls form adapter's default `onsubmit` action -->
+  <!-- form.submit calls adapter's default `onsubmit` action -->
   <button {{action form.submit}}>Save</button> 
 {{/fit-form}}
 ```
 
 **ex: `onsubmit` passed to component**
 
-When `onsubmit` is explicitly passed into the component, it will call this action in favor of the form's default `onsubmit` action on form submission.
+When `onsubmit` is explicitly passed into the component, it will call this action in favor of the adapter's default `onsubmit` action on form submission.
 
 ```hbs
 {{#fit-form models onsubmit=(action "submitMe"}}
