@@ -1,8 +1,9 @@
 ember-fit-form
 ==============================================================================
 
-[![npm version](https://badge.fury.io/js/ember-fit-form.svg)](https://badge.fury.io/js/ember-fit-form)
-[![Build Status](https://travis-ci.org/truecoach/ember-fit-form.svg?branch=master)](https://travis-ci.org/truecoach/ember-fit-form)
+[![Build Status][build-status-img]][build-status-link]
+[![NPM][npm-badge-img]][npm-badge-link]
+[![Ember Observer Score][ember-observer-badge]][ember-observer-url]
 
 *A form component which wraps a native `<form>` element and provides form state management abstractions.*
 
@@ -590,3 +591,9 @@ In this example, we'll extend the `ember-changeset` form-adapter. We will overwr
   {{/fit-form}}
   ```
 
+[build-status-img]: https://travis-ci.org/truecoach/ember-fit-form.svg?branch=master
+[build-status-link]: https://travis-ci.org/truecoach/ember-fit-form
+[npm-badge-img]: https://badge.fury.io/js/ember-fit-form.svg
+[npm-badge-link]: http://badge.fury.io/js/ember-fit-form
+[ember-observer-badge]: http://emberobserver.com/badges/ember-fit-form.svg
+[ember-observer-url]: http://emberobserver.com/addons/ember-fit-form
