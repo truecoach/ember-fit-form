@@ -5,11 +5,17 @@ import { set, get } from '@ember/object';
 import { dasherize } from '@ember/string';
 import { getOwner } from '@ember/application';
 
+/**
+  The fit-form service
+
+  @class FitFormService
+  @public
+*/
 export default Service.extend({
   /**
    * Cached adapters to reduce multiple expensive lookups.
    *
-   * @property _adapters
+   * @property _Adapters
    * @private
    * @type Object
    * @default null
@@ -22,8 +28,6 @@ export default Service.extend({
    * `options`.
    *
    * @method init
-   * @param {Void}
-   * @return {Void}
    */
   init() {
     const owner = getOwner(this);

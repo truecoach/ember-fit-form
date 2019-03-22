@@ -4,14 +4,74 @@ import { not, or, readOnly } from '@ember/object/computed';
 import { reject } from 'rsvp';
 import { task } from 'ember-concurrency';
 
-const Base = emberObject.extend({
+/**
+  A form-adapter object.
+
+  @class BaseFormAdapter
+  @export default
+*/
+export default emberObject.extend({
   models: undefined,
 
+
+  /**
+   * Handler for the form's cancel behavior.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method oncancel
+   * @return {undefined}
+  */
   oncancel(){},
+
+  /**
+   * Handler for when `onsubmit` is rejected.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method onerror
+   * @return {undefined}
+  */
   onerror(){},
+
+  /**
+   * Handler for when `onvalidate` is rejected or returns `false`.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method oninvalid
+   * @return {undefined}
+  */
   oninvalid(){},
+
+  /**
+   * Handler for the form's submit behavior.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method onsubmit
+   * @return {undefined}
+  */
   onsubmit(){},
+
+  /**
+   * Handler for when `onsubmit` is fulfilled.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method onsuccess
+   * @return {undefined}
+  */
   onsuccess(){},
+
+  /**
+   * Handler for the form's validate behavior.
+   *
+   * default: This is an empty function (no-op).
+   *
+   * @method onvalidate
+   * @return {undefined}
+  */
   onvalidate(){},
 
   // ---------------------- Form State ----------------------
@@ -79,5 +139,3 @@ const Base = emberObject.extend({
     return validation;
   })
 });
-
-export default Base;
