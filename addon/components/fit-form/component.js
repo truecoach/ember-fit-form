@@ -1,13 +1,18 @@
 import Component from '@ember/component';
 import layout from './template';
 
-import { A as emberArray, makeArray } from '@ember/array';
+import { A, makeArray } from '@ember/array';
 import { computed } from '@ember/object';
 import { inject } from '@ember/service';
 
 /**
  * Wraps a native `<form>` element and provides abstractions for working with models and model validations.
  */
+function flat(arr) { return [].concat(...arr) }
+function compact(arr) { return arr.filter(v => v != null) }
+function flattenAndCompact(o) {
+  return A(compact(flat(makeArray(o))));
+}
 
 const FitFormComponent = Component.extend({
   fitFormService: inject('fit-form'),
@@ -63,7 +68,7 @@ const FitFormComponent = Component.extend({
 
   formObject: computed('models.[]', 'adapter', function() {
     const Adapter = this.get('fitFormService').lookupAdapter(this.get('adapter'));
-    const emberModelArray = emberArray(makeArray(this.get('models')));
+    const modelArray = flattenAndCompact(this.get('models'));
 
     const hooks = [
       'oncancel', 'onerror', 'oninvalid', 'onsubmit', 'onsuccess', 'onvalidate'
@@ -74,7 +79,7 @@ const FitFormComponent = Component.extend({
     }, {});
 
     const adapter = Adapter.create({
-      models: emberModelArray,
+      models: modelArray,
       ...hooks
     });
 

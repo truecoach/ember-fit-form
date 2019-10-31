@@ -24,6 +24,58 @@ module('Integration | Component | fit-form', function(hooks) {
     assert.dom('form').hasText('template block text');
   });
 
+  test('a form with models', async function(assert) {
+    assert.expect(5);
+
+    const changeset = new Changeset({});
+
+    this.setProperties({
+      changeset,
+      changesets: [ changeset, changeset ]
+    });
+
+    await render(hbs`
+    {{#fit-form undefined as |form|}}
+      {{#each form.models as |m i|}}
+        index-{{i}}
+      {{/each}}
+    {{/fit-form}}
+  `);
+
+    assert.dom('form').doesNotIncludeText('index-0', 'renders no models with an undefined param');
+
+    await render(hbs`
+    {{#fit-form changeset as |form|}}
+      {{#each form.models as |m i|}}
+        index-{{i}}
+      {{/each}}
+    {{/fit-form}}
+  `);
+
+    assert.dom('form').includesText('index-0', 'accepts an object as a param');
+    assert.dom('form').doesNotIncludeText('index-1');
+
+    await render(hbs`
+    {{#fit-form changeset changeset as |form|}}
+      {{#each form.models as |m i|}}
+        index-{{i}}
+      {{/each}}
+    {{/fit-form}}
+  `);
+
+    assert.dom('form').includesText('index-1', 'accepts many objects as params');
+
+    await render(hbs`
+    {{#fit-form changesets as |form|}}
+      {{#each form.models as |m i|}}
+        index-{{i}}
+      {{/each}}
+    {{/fit-form}}
+  `);
+
+    assert.dom('form').includesText('index-1', 'accepts an array as a param');
+  });
+
   test('Submitting a form', async function(assert) {
     assert.expect(6);
 
