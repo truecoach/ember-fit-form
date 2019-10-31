@@ -28,7 +28,7 @@
     "ember-concurrency": "^1.0.0"
   },
   "devDependencies": {
-    "@ember/optional-features": "^0.7.0",
+    "@ember/optional-features": "^1.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-changeset-validations": "^1.2.11",
     "ember-cli": "~3.12.0",
