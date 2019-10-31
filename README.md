@@ -15,6 +15,15 @@ support promise-aware hooks to manage your applications form state.
 
 > Please note that `ember-fit-form` does not provide form control components. It is simply an html form element with abstractions for state management.
 
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+* Node.js v8 or above
+
+
 Installation
 ------------------------------------------------------------------------------
 
@@ -590,6 +599,11 @@ In this example, we'll extend the `ember-changeset` form-adapter. We will overwr
     {{!-- other form content --}}
   {{/fit-form}}
   ```
+
+License
+------------------------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).
 
 [build-status-img]: https://travis-ci.org/truecoach/ember-fit-form.svg?branch=master
 [build-status-link]: https://travis-ci.org/truecoach/ember-fit-form
