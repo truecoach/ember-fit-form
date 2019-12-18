@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import layout from './template';
+import layout from '../templates/components/fit-form';
 
 import { A, makeArray } from '@ember/array';
 import { computed } from '@ember/object';
