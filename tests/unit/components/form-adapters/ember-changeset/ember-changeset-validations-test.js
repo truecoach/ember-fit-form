@@ -72,7 +72,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
 
-        await run(() => this.form.submit() );
+        await run(() => this.form.submit());
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
@@ -155,7 +155,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
         const changesetValidate = sinon.spy(this.post, "validate");
 
         assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
-        await run(() => { this.form.validate(); });
+        await run(() => this.form.validate());
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(changesetValidate.called, "changeset.validate was never called");
