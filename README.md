@@ -19,9 +19,9 @@ support promise-aware hooks to manage your applications form state.
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v2.18 or above
+* Ember.js v3.16 or above
 * Ember CLI v2.13 or above
-* Node.js v8 or above
+* Node.js v10 or above
 
 
 Installation
@@ -572,7 +572,7 @@ form.get('didValidate'); // true
 ------------------------------------------------------------------------------
 
 Generate a form adapter
-> $ ember generate form-adapter foo-bar
+  > $ ember generate form-adapter foo-bar
 
 This creates `app/form-adapters/foo-bar.js` and a unit test at `tests/unit/form-adapters/foo-bar-test.js`. By default, the form-adapter extends the `base` adapter. 
 
