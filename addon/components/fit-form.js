@@ -115,8 +115,4 @@ const FitFormComponent = Component.extend({
   },
 });
 
-FitFormComponent.reopenClass({
-  positionalParams: 'models',
-});
-
 export default FitFormComponent;
