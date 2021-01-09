@@ -1,6 +1,6 @@
 {
   "name": "ember-fit-form",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A flexible component for form state management with data model adapters.",
   "keywords": [
     "ember-addon"
