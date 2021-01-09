@@ -1,8 +1,8 @@
-import DS from 'ember-data';
+import Model, { attr, hasMany } from '@ember-data/model';
 
-export default DS.Model.extend({
-  comments: DS.hasMany(),
+export default class PostModel extends Model {
+  comments = hasMany();
 
-  title: DS.attr(),
-  body: DS.attr()
-});
+  title = attr();
+  body = attr();
+}
