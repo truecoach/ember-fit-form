@@ -1,1 +1,4 @@
-{{yield formObject}}
+<form {{on "submit" (action "handleSubmit")}}>
+  {{yield formObject}}
+</form>
+

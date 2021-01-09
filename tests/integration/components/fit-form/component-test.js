@@ -162,7 +162,7 @@ module('Integration | Component | fit-form', function(hooks) {
 
     assert.dom('button').isDisabled('the form is unsubmittable while submitting');
 
-    const models = component.get('models');
+    const models = component.models;
     assert.equal(models.length, 2, "two models are present on the component");
     assert.equal(models[0], changeset0);
     assert.equal(models[1], changeset1);
@@ -259,10 +259,10 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       oncancel(form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
       },
       onsubmit(form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
       }
     });
 
@@ -285,10 +285,10 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       oncancel(form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
       },
       onsubmit(form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
       }
     });
 
@@ -311,11 +311,11 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       oncancel(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       },
       onsubmit(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       }
     });
@@ -339,7 +339,7 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       onsubmit(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "submit", "submit event is present");
       }
     });
@@ -361,7 +361,7 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       onsubmit(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "submit", "submit event is present");
       }
     });
@@ -383,11 +383,11 @@ module('Integration | Component | fit-form', function(hooks) {
     this.setProperties({
       changeset,
       oncancel(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       },
       onsubmit(event, form)  {
-        assert.equal(form.get('models.firstObject'), changeset, 'formObject is the "this" context');
+        assert.equal(form.models.firstObject, changeset, 'formObject is the "this" context');
         assert.equal(event.type, "click", "click event is present");
       }
     });

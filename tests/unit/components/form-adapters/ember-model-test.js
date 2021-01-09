@@ -21,7 +21,7 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
 
   module('without models', function(hooks) {
     hooks.beforeEach(function() {
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the default state', function(assert) {
@@ -59,13 +59,13 @@ module('Unit | Component | form-adapters/ember-model', function(hooks) {
     hooks.beforeEach(function() {
       this.post = run(() => this.store.createRecord('post') );
       this.component.set('models', this.post);
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the form states', function(assert) {
       assert.ok(this.component);
       assert.ok(this.form);
-      assert.deepEqual(this.form.get('models'), [ this.post ]);
+      assert.deepEqual(this.form.models, [ this.post ]);
 
       assertProps(assert, this.post, {
         hasDirtyAttributes: true // Dirtiness

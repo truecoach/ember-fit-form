@@ -14,19 +14,23 @@ module('Unit | Component | form-adapters/base', function(hooks) {
 
   function assertFormProps(assert, form, assertions = {}) {
     Object.keys(assertions).forEach((k) => {
-      assert.equal(get(form, k), assertions[k]);
+      assert.equal(
+        get(form, k),
+        assertions[k],
+        `form: ${k} is ${assertions[k]}`
+      );
     });
   }
 
   module('without models', function(hooks) {
     hooks.beforeEach(function() {
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the default state', function(assert) {
-      assert.ok(this.component);
-      assert.ok(this.form);
-      assert.deepEqual(this.form.get('models'), []);
+      assert.ok(this.component, 'Component exists');
+      assert.ok(this.form, 'Component has a formObject');
+      assert.deepEqual(this.form.models, [], 'the form models are an empty array');
 
       assertFormProps(assert, this.form, {
         isDirty: false,      // Dirtiness
@@ -198,13 +202,13 @@ module('Unit | Component | form-adapters/base', function(hooks) {
     hooks.beforeEach(function() {
       this.model = {};
       this.component.set('models', this.model);
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the default state', function(assert) {
       assert.ok(this.component);
       assert.ok(this.form);
-      assert.deepEqual(this.form.get('models'), [ this.model ]);
+      assert.deepEqual(this.form.models, [ this.model ]);
     });
   });
 
@@ -212,13 +216,13 @@ module('Unit | Component | form-adapters/base', function(hooks) {
     hooks.beforeEach(function() {
       this.models = [{}, {}];
       this.component.set('models', this.models);
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the default state', function(assert) {
       assert.ok(this.component);
       assert.ok(this.form);
-      assert.deepEqual(this.form.get('models'), this.models);
+      assert.deepEqual(this.form.models, this.models);
     });
   });
 });

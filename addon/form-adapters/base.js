@@ -1,83 +1,130 @@
-import emberObject from '@ember/object';
-
-import { not, or, readOnly } from '@ember/object/computed';
 import { reject } from 'rsvp';
 import { task } from 'ember-concurrency';
 
-const Base = emberObject.extend({
-  models: undefined,
+export default class BaseAdapter {
+  constructor(options) {
+    super.constructor(...arguments);
+    this.models = options.models;
+    this.oncancel = options.oncancel || this.oncancel;
+    this.onerror = options.onerror || this.onerror;
+    this.oninvalid = options.oninvalid || this.oninvalid;
+    this.onsubmit = options.onsubmit || this.onsubmit;
+    this.onsuccess = options.onsuccess || this.onsuccess;
+    this.onvalidate = options.onvalidate || this.onvalidate;
+  }
 
-  oncancel(){},
-  onerror(){},
-  oninvalid(){},
-  onsubmit(){},
-  onsuccess(){},
-  onvalidate(){},
+  oncancel() {}
+  onerror() {}
+  oninvalid() {}
+  onsubmit() {}
+  onsuccess() {}
+  onvalidate() {}
 
   // ---------------------- Form State ----------------------
-  didCancel: or('cancelTask.last.{isError,isSuccessful}'),
-  didSubmit: or('submitTask.last.{isError,isSuccessful}'),
-  didValidate: or('validateTask.last.{isError,isSucccessful}'),
 
-  isCancelling: readOnly('cancelTask.isRunning'),
-  isSubmitting: readOnly('submitTask.isRunning'),
-  isValidating: readOnly('validateTask.isRunning'),
+  get isDirty() {
+    return false;
+  }
 
-  isInvalid: false,
-  isValid: not('isInvalid'),
+  get isInvalid() {
+    return false;
+  }
 
-  isDirty: false,
-  isPristine: not('isDirty'),
+  get didCancel() {
+    return this.cancelTask.last?.isError || this.cancelTask.last?.isSucccessful;
+  }
 
-  isSubmittable: not('isUnsubmittable'),
-  isUnsubmittable: or('isPristine', 'isInvalid', 'isSubmitting', 'isCancelling'),
+  get didSubmit() {
+    return this.submitTask.last?.isError || this.submitTask.last?.isSucccessful;
+  }
 
+  get didValidate() {
+    return (
+      this.validateTask.last?.isError || this.validateTask.last?.isSucccessful
+    );
+  }
+
+  get isCancelling() {
+    return this.cancelTask.isRunning;
+  }
+
+  get isSubmitting() {
+    return this.submitTask.isRunning;
+  }
+
+  get isValidating() {
+    return this.validateTask.isRunning;
+  }
+
+  get isValid() {
+    return !this.isInvalid;
+  }
+
+  get isPristine() {
+    return !this.isDirty;
+  }
+
+  get isUnsubmittable() {
+    return (
+      this.isPristine ||
+      this.isInvalid ||
+      this.isSubmitting ||
+      this.isCancelling
+    );
+  }
+
+  get isSubmittable() {
+    return !this.isUnsubmittable;
+  }
+
+  // ---------------------- Form Methods ----------------------
   cancel() {
-    return this.get('cancelTask').perform(...arguments);
-  },
+    return this.cancelTask.perform(...arguments);
+  }
+
   submit() {
-    return this.get('submitTask').perform(...arguments).then((val) => {
-      this.get('onsuccess')(val, this);
-    }).catch((e) => {
-      if (this.get('validateTask.last.isSuccessful')) {
-        this.get('onerror')(e, this);
-      }
-    });
-  },
+    return this.submitTask
+      .perform(...arguments)
+      .then((val) => {
+        this.onsuccess(val, this);
+      })
+      .catch((e) => {
+        if (this.validateTask?.last?.isSuccessful) {
+          this.onerror(e, this);
+        }
+      });
+  }
+
   validate() {
-    return this.get('validateTask').perform(...arguments).catch((e) => {
-      this.get('oninvalid')(e, this);
+    return this.validateTask.perform(...arguments).catch((e) => {
+      this.oninvalid(e, this);
     });
-  },
+  }
 
-  cancelTask: task(function * () {
-    return yield this.get('oncancel')(...arguments, this);
-  }),
+  @task(function* () {
+    return yield this.oncancel(...arguments, this);
+  })
+  cancelTask;
 
-  submitTask: task(function * () {
-    // validate the form
+  @task(function* () {
     yield this.validate();
 
-    // reject if validation failed
-    if (this.get('validateTask.last.isError')) {
+    if (this.validateTask?.last?.isError) {
       return reject();
     }
 
-    // submit the form
-    return yield this.get('onsubmit')(...arguments, this);
-  }),
+    return yield this.onsubmit(...arguments, this);
+  })
+  submitTask;
 
-  validateTask: task(function * () {
-    // validate the form
-    const validation = yield this.get('onvalidate')(...arguments, this);
+  @task(function* () {
+    const validation = yield this.onvalidate(...arguments, this);
 
-    // reject validation if return value is false
     if (validation === false) {
       return reject();
     }
 
     return validation;
   })
-});
-
-export default Base;
+  validateTask;
+}

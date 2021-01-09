@@ -16,7 +16,7 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
   function assertFormProps(assert, form, assertions = {}) {
     Object.keys(assertions).forEach((k) => {
-      assert.equal(get(form, k), assertions[k]);
+      assert.equal(get(form, k), assertions[k],`form: ${k} is ${assertions[k]}`);
     });
   }
 
@@ -25,13 +25,13 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
       const postValidations = { title: validatePresence({ presence: true }) };
       this.post = new Changeset({}, lookupValidator(postValidations), postValidations);
       this.component.set('models', this.post);
-      this.form = this.component.get('formObject');
+      this.form = this.component.formObject;
     });
 
     test('the form states', function(assert) {
       assert.ok(this.component);
       assert.ok(this.form);
-      assert.deepEqual(this.form.get('models'), [ this.post ]);
+      assert.deepEqual(this.form.models, [ this.post ]);
 
       assertFormProps(assert, this.post, {
         isDirty: false,      // Dirtiness
@@ -70,13 +70,13 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
       test('submitting an invalid form fails the validation step', async function(assert) {
         const changesetSave = sinon.spy(this.post, "save");
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
+        assert.ok(this.form.isValid, "the form is valid prior to submission");
 
         await run(() => this.form.submit());
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
-        assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
+        assert.ok(this.form.isInvalid, "the form is invalid after validation");
 
         assert.notOk(this.onsubmit.called, "onsubmit was never called");
         assert.notOk(changesetSave.called, "changeset.save was never called");
@@ -89,12 +89,12 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         this.post.set('title', 'my post');
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
+        assert.ok(this.form.isValid, "the form is valid prior to submission");
 
         const submission = this.form.submit();
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
-        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+        assert.ok(this.form.isValid, "the form is valid after validation");
         assert.notOk(submission.isError, "the submission passed validation");
 
         await submission;
@@ -115,12 +115,12 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         this.post.set('title', 'my post');
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to submission");
+        assert.ok(this.form.isValid, "the form is valid prior to submission");
 
         const submission = this.form.submit();
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
-        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+        assert.ok(this.form.isValid, "the form is valid after validation");
         assert.notOk(submission.isError, "the submission passed validation");
 
         await submission;
@@ -154,14 +154,14 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
       test('validating an invalid form fails the validation step', async function(assert) {
         const changesetValidate = sinon.spy(this.post, "validate");
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+        assert.ok(this.form.isValid, "the form is valid prior to validation");
         await run(() => this.form.validate());
 
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(changesetValidate.called, "changeset.validate was never called");
         assert.ok(this.oninvalid.calledOnce, "oninvalid was called");
 
-        assert.ok(this.form.get('isInvalid'), "the form is invalid after validation");
+        assert.ok(this.form.isInvalid, "the form is invalid after validation");
       });
 
       test('validating the form is fulfilled', async function(assert) {
@@ -169,14 +169,14 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         this.post.set('title', 'my post');
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+        assert.ok(this.form.isValid, "the form is valid prior to validation");
 
         await this.form.validate();
 
         assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.notOk(this.oninvalid.called, "oninvalid was never called");
-        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+        assert.ok(this.form.isValid, "the form is valid after validation");
       });
 
       test('validating the form is rejected', async function(assert) {
@@ -184,14 +184,14 @@ module('Unit | Component | form-adapters/ember-changeset/ember-changeset-validat
 
         this.post.set('title', 'my post');
 
-        assert.ok(this.form.get('isValid'), "the form is valid prior to validation");
+        assert.ok(this.form.isValid, "the form is valid prior to validation");
 
         await this.form.validate();
 
         assert.ok(changesetValidate.calledOnce, "changeset.validate was called");
         assert.ok(this.onvalidate.calledOnce, "onvalidate was called");
         assert.ok(this.oninvalid.called, "oninvalid was called");
-        assert.ok(this.form.get('isValid'), "the form is valid after validation");
+        assert.ok(this.form.isValid, "the form is valid after validation");
 
         const oninvalidArgs = this.oninvalid.getCall(0).args;
         assert.equal(oninvalidArgs.length, 2, "oninvalid called with two arguments");
