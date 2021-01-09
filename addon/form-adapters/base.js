@@ -11,6 +11,10 @@ export default class BaseAdapter {
     this.onsubmit = options.onsubmit || this.onsubmit;
     this.onsuccess = options.onsuccess || this.onsuccess;
     this.onvalidate = options.onvalidate || this.onvalidate;
+
+    this.cancel = this.cancel.bind(this);
+    this.submit = this.submit.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   oncancel() {}
