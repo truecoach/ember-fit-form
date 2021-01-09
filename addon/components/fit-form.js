@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import layout from '../templates/components/fit-form';
-
+import { getOwner } from '@ember/application';
 import { A, makeArray } from '@ember/array';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -72,7 +72,11 @@ const FitFormComponent = Component.extend({
   },
 
   formObject: computed('models.[]', 'adapter', function () {
-    const Adapter = this.fitForm.lookupAdapter(this.adapter);
+    let _adapter =
+      this.adapter ||
+      getOwner(this).resolveRegistration('config:environment')['ember-fit-form']
+        .adapter;
+    const Adapter = this.fitForm.lookupAdapter(_adapter);
     const modelArray = flattenAndCompact(this.models);
 
     const hooks = [
