@@ -14,7 +14,7 @@ module('Unit | Component | form-adapters/ember-changeset', function (hooks) {
       .create({ adapter: 'ember-changeset' });
   });
 
-  function assertFormProps(assert, form, assertions = {}, message) {
+  function assertFormProps(assert, form, assertions = {}) {
     Object.keys(assertions).forEach((k) => {
       assert.equal(
         get(form, k),
