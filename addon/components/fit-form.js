@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import layout from '../templates/components/fit-form';
+import layout from '../components/fit-form';
 import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { action, computed } from '@ember/object';
