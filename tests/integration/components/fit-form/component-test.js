@@ -479,11 +479,16 @@ module('Integration | Component | fit-form', function (hooks) {
 
   module('keyboard event handlers', function () {
     test(`keydown`, async function (assert) {
-      assert.ok(3);
+      assert.expect(2);
 
       this.setProperties({
-        onkeydown(event) {
+        onkeydown(event, formObject) {
           assert.equal(event.type, 'keydown', 'triggered event type');
+          assert.equal(
+            formObject.constructor.name,
+            'EmberChangesetAdapter',
+            'handler receives the formObject as last arg'
+          );
         },
       });
 
@@ -492,11 +497,16 @@ module('Integration | Component | fit-form', function (hooks) {
     });
 
     test(`keyup`, async function (assert) {
-      assert.ok(3);
+      assert.expect(2);
 
       this.setProperties({
-        onkeyup(event) {
+        onkeyup(event, formObject) {
           assert.equal(event.type, 'keyup', 'triggered event type');
+          assert.equal(
+            formObject.constructor.name,
+            'EmberChangesetAdapter',
+            'handler receives the formObject as last arg'
+          );
         },
       });
 
@@ -505,11 +515,16 @@ module('Integration | Component | fit-form', function (hooks) {
     });
 
     test(`keypress`, async function (assert) {
-      assert.ok(3);
+      assert.expect(2);
 
       this.setProperties({
-        onkeypress(event) {
+        onkeypress(event, formObject) {
           assert.equal(event.type, 'keypress', 'triggered event type');
+          assert.equal(
+            formObject.constructor.name,
+            'EmberChangesetAdapter',
+            'handler receives the formObject as last arg'
+          );
         },
       });
 

@@ -1,4 +1,9 @@
-<form {{on "submit" this.handleSubmit}}>
+<form
+  {{on "submit" this.handleSubmit}}
+  {{on "keydown" this.handleKeydown}}
+  {{on "keyup" this.handleKeyup}}
+  {{on "keypress" this.handleKeypress}}
+>
   {{yield this.formObject}}
 </form>
 

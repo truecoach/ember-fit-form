@@ -44,16 +44,35 @@ export default class FitFormComponent extends Component {
 
   onvalidate = undefined;
   oninvalid = undefined;
-
-  constructor() {
-    super(...arguments);
-    this._registerKeyboardEvents();
-  }
+  onkeyup = undefined;
+  onkeydown = undefined;
+  onkeypress = undefined;
 
   @action
   handleSubmit(event) {
     event.preventDefault();
     this.formObject.submit(...arguments);
+  }
+
+  @action
+  handleKeyup() {
+    if (typeof this.onkeyup === 'function') {
+      this.onkeyup(...arguments, this.formObject);
+    }
+  }
+
+  @action
+  handleKeydown() {
+    if (typeof this.onkeydown === 'function') {
+      this.onkeydown(...arguments, this.formObject);
+    }
+  }
+
+  @action
+  handleKeypress() {
+    if (typeof this.onkeypress === 'function') {
+      this.onkeypress(...arguments, this.formObject);
+    }
   }
 
   @computed(
@@ -82,17 +101,6 @@ export default class FitFormComponent extends Component {
       onsubmit: this.onsubmit,
       onsuccess: this.onsuccess,
       onvalidate: this.onvalidate,
-    });
-  }
-
-  _registerKeyboardEvents() {
-    ['keyDown', 'keyUp', 'keyPress'].forEach((eventName) => {
-      const method = this[`on${eventName.toLowerCase()}`];
-      if (typeof method === 'function') {
-        this[eventName] = function (...args) {
-          method(...args, this.formObject);
-        };
-      }
     });
   }
 }
