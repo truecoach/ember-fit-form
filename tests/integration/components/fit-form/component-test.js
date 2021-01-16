@@ -24,6 +24,25 @@ module('Integration | Component | fit-form', function (hooks) {
     assert.dom('form').hasText('template block text');
   });
 
+  test('Adding attributes to the form', async function (assert) {
+    await render(hbs`
+    <FitForm class="test_class" data-test="test selector">
+      template block text
+    </FitForm>
+    `);
+
+    assert
+      .dom('form')
+      .hasClass('test_class', 'form is rendered with the class');
+    assert
+      .dom('form')
+      .hasAttribute(
+        'data-test',
+        'test selector',
+        'form is rendered with the test selector'
+      );
+  });
+
   test('a form with models', async function (assert) {
     assert.expect(4);
 
