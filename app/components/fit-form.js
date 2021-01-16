@@ -1,1 +1,1 @@
-export { default } from "ember-fit-form/components/fit-form";
+export { default } from 'ember-fit-form/components/fit-form';

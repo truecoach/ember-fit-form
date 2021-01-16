@@ -1,41 +1,32 @@
-import Base from './base';
+import BaseAdapter from './base';
 import { all } from 'rsvp';
-import { computed, get } from '@ember/object';
 
-const EmbderModelAdapter = Base.extend({
-  _validations: computed.mapBy('models', 'validations'),
+export default class EmberModelAdapter extends BaseAdapter {
+  get isDirty() {
+    return this.models.some((c) => c.get('hasDirtyAttributes'));
+  }
 
-  isDirty: computed('models.@each.hasDirtyAttributes', function() {
-    return this.get('models').some(c => c.get('hasDirtyAttributes'));
-  }),
+  get isInvalid() {
+    return this.models.some((model) => model.get('validations.isInvalid'));
+  }
 
-  isInvalid: computed('_validations.@each.isInvalid', function() {
-    const validations = this.get('_validations');
-    return validations.some(v => get(v || {}, 'isInvalid'));
-  }),
-
-  oncancel(){
+  oncancel() {
     const form = arguments[arguments.length - 1];
-    const models = form.get('models');
-    models.forEach(m => m.rollbackAttributes());
-  },
+    form.models.forEach((m) => m.rollbackAttributes());
+  }
 
-  onsubmit(){
+  onsubmit() {
     const form = arguments[arguments.length - 1];
-    const models = form.get('models');
-    const submitting = models.map(m => m.save());
+    const submitting = form.models.map((m) => m.save());
     return all(submitting);
-  },
+  }
 
-  onvalidate(){
+  onvalidate() {
     const form = arguments[arguments.length - 1];
-    const models = form.get('models');
-    const validating = models
-          .filter(m => typeof m.validate === "function")
-          .map(m => m.validate());
+    const validating = form.models
+      .filter((m) => typeof m.validate === 'function')
+      .map((m) => m.validate());
 
     return all(validating);
   }
-});
-
-export default EmbderModelAdapter;
+}

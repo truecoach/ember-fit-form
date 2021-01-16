@@ -1,6 +1,6 @@
-import DS from 'ember-data';
+import Model, { attr, belongsTo } from '@ember-data/model';
 
-export default DS.Model.extend({
-  user: DS.belongsTo(),
-  body: DS.attr()
-});
+export default class CommentModel extends Model {
+  user = belongsTo();
+  body = attr();
+}

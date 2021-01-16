@@ -19,9 +19,9 @@ support promise-aware hooks to manage your applications form state.
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v2.18 or above
+* Ember.js v3.16 or above
 * Ember CLI v2.13 or above
-* Node.js v8 or above
+* Node.js v10 or above
 
 
 Installation
@@ -39,19 +39,19 @@ Usage
 
 ``` hbs
 {{!-- my-form.hbs --}}
-{{#fit-form model oncancel=(action rollback) onsubmit=(action save) as |form|}}
-  <input oninput={{action (mut model.name) value="target.value"}}>
+<FitForm @models={{model}} @oncancel={{action rollback}} @onsubmit={{action save}} as |form|>
+  <input {{on "input" (action (mut model.name) value="target.value")}} />
 
   {{!-- other form content --}}
 
-  <button {{action form.cancel}} disabled={{form.isCancelling}}>
+  <button {{on "click" form.cancel}} disabled={{form.isCancelling}}>
     {{if form.isCancelling "Cancelling..." "Cancel"}}
   </button>
 
-  <button {{action form.submit}} disabled={{form.isUnsubmittable}}>
+  <button {{on "click" form.submit}} disabled={{form.isUnsubmittable}}>
     {{if form.isSubmitting "Saving..." "Save"}}
   </button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
@@ -90,10 +90,10 @@ Each form adapter defines its own form [action hooks](#fit-form-component-action
 When `onsubmit` is not explicitly passed into the component, [the adapter's default `onsubmit` action](https://github.com/fitbotinc/ember-fit-form/blob/06f42fc224792bb85ecbfb35f563a7aad22b3420/addon/form-adapters/ember-changeset.js#L23-L29) will be called on form submission.
 
 ```hbs
-{{#fit-form models}}
+<FitForm @models={{models}}>
   <!-- form.submit calls adapter's default `onsubmit` action -->
-  <button {{action form.submit}}>Save</button> 
-{{/fit-form}}
+  <button {{on "click" form.submit}}>Save</button> 
+</FitForm>
 ```
 
 **ex: `onsubmit` passed to component**
@@ -101,12 +101,11 @@ When `onsubmit` is not explicitly passed into the component, [the adapter's defa
 When `onsubmit` is explicitly passed into the component, it will call this action in favor of the adapter's default `onsubmit` action on form submission.
 
 ```hbs
-{{#fit-form models onsubmit=(action "submitMe"}}
+<FitForm @models={{models}} @onsubmit={{action "submitMe"}}>
   <!-- form.submit calls "submitMe" action -->
   <button {{action form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
-
 
 
 ### Configuration
@@ -126,9 +125,9 @@ module.exports = function(environment) {
 In the case that your forms use various Models throughout the application, you can overwrite the `adapter` at the component level.
 
 ``` hbs
-{{#fit-form model adapter="ember-model"}}
+<FitForm @models={{model}} @adapter="ember-model">
   {{!-- form content --}}
-{{/fit-form}}
+</FitForm>
 ```
 
 ## API
@@ -238,14 +237,14 @@ Form submission is triggered when calling `form.submit()`.
 
 
 ``` hbs
-{{#fit-form model onsubmit=(action save) as |form|}}
+<FitForm @models={{this.model}} @onsubmit={{this.save}} as |form|}}>
   <button {{form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
 save(/* form */) {
-  return model.save();
+  return this.model.save();
 }
 ```
 
@@ -257,9 +256,9 @@ save(/* form */) {
 The `onsuccess` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is fulfilled.
 
 ``` hbs
-{{#fit-form model onsuccess=(action success) as |form|}}
+<FitForm @models={{this.model}} @onsuccess={{this.success}} as |form|}}>
   <button {{form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
@@ -274,9 +273,9 @@ success(/* result, form */) {
 The `onerror` hook is a promise-aware action which is called when the [`onsubmit`](#onsubmit) hook is rejected.
 
 ``` hbs
-{{#fit-form model onerror=(action error) as |form|}}
+<FitForm @models={{this.model}} @onerror={{this.error}} as |form|}}>
   <button {{form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
@@ -292,14 +291,14 @@ The `oncancel` hook is a promise-aware action which is called on form cancellati
 Form cancellation is triggered when calling `form.cancel()`.
 
 ``` hbs
-{{#fit-form model oncancel=(action rollback) as |form|}}
+<FitForm @models={{this.model}} @oncancel={{this.rollback}} as |form|}}>
   <button {{form.cancel}}>Cancel</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
 rollback(/* form */) {
-  return model.rollback();
+  return this.model.rollback();
 }
 ```
 
@@ -312,15 +311,15 @@ On form submission, if `onvalidate` returns a rejected `Promise` or
 `false`, the submission will reject, and `onsubmit` will not be called.
 
 ``` hbs
-{{#fit-form model onvalidate=(action validate) as |form|}}
+<FitForm @models={{this.model}} @onvalidate={{this.validate}} as |form|}}>
   <button {{form.validate}}>Check Fields</button>
   <button {{form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
 validate(/* form */) {
-  return model.validate();
+  return this.model.validate();
 }
 ```
 
@@ -330,9 +329,9 @@ validate(/* form */) {
 The `oninvalid` hook is a promise-aware action which is called when the [`onvalidate`](#onvalidate) hook is rejected or returns `false`.
 
 ``` hbs
-{{#fit-form model oninvalid=(action invalid) as |form|}}
+<FitForm @models={{this.model}} @oninvalid={{this.invalid}} as |form|}}>
   <button {{form.submit}}>Save</button>
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
@@ -355,9 +354,9 @@ When `onkeydown` is passed into `fit-form` component, it registers the
 the `keyDown` event is triggered.
 
 ``` hbs
-{{#fit-form model onkeydown=(action handlekey) as |form|}}
+<FitForm @models={{this.model}} @onkeydown={{this.handlekey}} as |form|}}>
   {{!-- form content --}}
-{{/fit-form}}
+</FitForm>
 ```
 
 ``` javascript
@@ -400,7 +399,7 @@ See [`onkeydown`](#onkeydown) example for usage.
 Returns a Boolean value of the form's (un)submittability.
 
 ```js
-form.get('isUnsubmittable'); // true
+form.isUnsubmittable; // true
 ```
 
 ```hbs
@@ -415,7 +414,7 @@ form.get('isUnsubmittable'); // true
 Returns a Boolean value of the form's submittability.
 
 ```js
-form.get('isSubmittable'); // true
+form.isSubmittable; // true
 ```
 
 ```hbs
@@ -431,7 +430,7 @@ Returns a Boolean value of the form's validity. A valid form is one
 where all of the form's models are valid.
 
 ```js
-form.get('isValid'); // true
+form.isValid; // true
 ```
 
 ```hbs
@@ -447,7 +446,7 @@ Returns a Boolean value of the form's (in)validity. A invalid form is one
 where the some of the form's models are invalid.
 
 ```js
-form.get('isInvalid'); // true
+form.isInvalid; // true
 ```
 
 ```hbs
@@ -463,7 +462,7 @@ Returns a Boolean value of the form's state. A dirty form is one with
 changes.
 
 ```js
-form.get('isDirty'); // true
+form.isDirty; // true
 ```
 
 **[⬆️ back to top](#api)**
@@ -473,7 +472,7 @@ Returns a Boolean value of the form's state. A pristine form is one
 with no changes.
 
 ```js
-form.get('isPristine'); // true
+form.isPristine; // true
 ```
 
 **[⬆️ back to top](#api)**
@@ -484,7 +483,7 @@ form is one where the `oncancel` hook is pending. This attribute is
 commonly coupled with the [`cancel`](#cancel) action.
 
 ```js
-form.get('isCancelling'); // true
+form.isCancelling; // true
 ```
 
 ``` hbs
@@ -499,7 +498,7 @@ form is one where the `onsubmit`, `onsuccess`, or `onerror` hooks are
 pending. This attribute is commonly coupled with the [`submit`](#submit) action.
 
 ```js
-form.get('isSubmitting'); // true
+form.isSubmitting; // true
 ```
 
 ``` hbs
@@ -512,7 +511,7 @@ form.get('isSubmitting'); // true
 Returns a Boolean value of the form's validating state. A validating form is one where the form's model(s) are validating upon form submission.
 
 ```js
-form.get('isValidating'); // true
+form.isValidating; // true
 ```
 
 ``` hbs
@@ -527,11 +526,11 @@ form.get('isValidating'); // true
 Returns a Boolean value of the form's cancelled state. A cancelled form is one where the [`oncancel`](#oncancel) hooks is settled.
 
 ```js
-form.get('didSubmit'); // true
+form.didCancel; // true
 ```
 
 ``` hbs
-{{#if form.didSubmit}}
+{{#if form.didCancel}}
   <span class='error'>{{model.errors}}</span>
 {{/if}}
 ```
@@ -542,7 +541,7 @@ form.get('didSubmit'); // true
 Returns a Boolean value of the form's submitted state. A submitted form is one where the [`onsubmit`](#onsubmit) hooks is settled.
 
 ```js
-form.get('didSubmit'); // true
+form.didSubmit; // true
 ```
 
 ``` hbs
@@ -557,7 +556,7 @@ form.get('didSubmit'); // true
 Returns a Boolean value of the form's validated state. A validated form is one where the form's model(s) were validated upon form submission.
 
 ```js
-form.get('didValidate'); // true
+form.didValidate; // true
 ```
 
 ``` hbs
@@ -572,9 +571,9 @@ form.get('didValidate'); // true
 ------------------------------------------------------------------------------
 
 Generate a form adapter
-> $ ember generate form-adapter foo-bar
+  > $ ember generate form-adapter foo-bar
 
-This creates `app/form-adapters/foo-bar.js` and a unit test at `tests/unit/form-adapters/foo-bar-test.js`. By default, the form-adapter extends the `base` adapter. 
+This creates `app/form-adapters/foo-bar.js` and a unit test at `tests/unit/form-adapters/foo-bar-test.js`. By default, the form-adapter extends the `BaseAdapter`. 
 
 #### Example - extend `ember-changeset` form-adapter
 
@@ -587,17 +586,17 @@ In this example, we'll extend the `ember-changeset` form-adapter. We will overwr
   ``` js
   // app/form-adapters/ember-changeset/no-rollbacks;
   import EmberChangesetAdapter from 'ember-fit-form/form-adapters/ember-changeset';
-  export default EmberChangesetAdapter.extend({
+  export default class EmberChangesetNoRollbacksAdapter extends EmberChangesetAdapter {
     oncancel() { /* noop - ie. no rollbackAttributes */ }
-  });
+  }
   ```
 
 - Define adapter on component or [configuration](#configuration)
   ```hbs
   {{!-- my-template.hbs --}}
-  {{#fit-form changeset adapter="ember-changeset/no-rollbacks"}}
+  <FitForm @models={{changeset}} @adapter="ember-changeset/no-rollbacks">
     {{!-- other form content --}}
-  {{/fit-form}}
+  </FitForm>
   ```
 
 License

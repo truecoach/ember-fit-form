@@ -1,52 +1,34 @@
 <%= importStatement %>
 
-export default <%= baseClass %>.extend({
+export default class <% classifiedModuleName %>Adapter extends <%= baseClass %> {
   // Fit-Form Attributes
   /*
-   * isDirty: false,
-   * isInvalid: false,
-   * isUnsubmittable: false,
+   * isDirty = false;
+   * isInvalid = false;
+   * isUnsubmittable = false;
    */
 
   // Fit-Form Action Hooks
   /*
-   * oncancel() {
+   * oncancel() {}
    *
-   * },
+   * onerror() {}
    *
-   * onerror() {
+   * oninvalid() {}
    *
-   * },
+   * onsuccess() {}
    *
-   * oninvalid() {
+   * onsubmit() {}
    *
-   * },
-   *
-   * onsuccess() {
-   *
-   * },
-   *
-   * onsubmit() {
-   *
-   * },
-   *
-   * onvalidate() {
-   *
-   * }
+   * onvalidate() {}
    */
 
   // Fit-Form Event Handler Hooks
   /*
-   * onkeydown() {
+   * onkeydown() {}
    *
-   * },
+   * onkeypress() {}
    *
-   * onkeypress() {
-   *
-   * },
-   *
-   * onkeyup() {
-   *
-   * },
+   * onkeyup() {}
    */
-});
+}
