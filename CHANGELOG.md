@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.0.1
+
+- bugfix: Restores ability to pass classes and other html attributes to FitForm's form element [#83](https://github.com/truecoach/ember-fit-form/pull/83)
+
 ## 3.0.0
 
 - Adds support for ember-changeset >= v3.0.0
